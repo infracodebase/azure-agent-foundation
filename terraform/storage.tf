@@ -45,13 +45,13 @@ resource "azurerm_storage_account_network_rules" "this" {
 
 # Storage containers for different purposes
 resource "azurerm_storage_container" "function_app" {
-  name                  = "function-app"
-  storage_account_name  = azurerm_storage_account.this.name
+  name                 = "function-app"
+  storage_account_id   = azurerm_storage_account.this.id
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "api_data" {
-  name                  = "api-data"
-  storage_account_name  = azurerm_storage_account.this.name
+  name                 = "api-data"
+  storage_account_id   = azurerm_storage_account.this.id
   container_access_type = "private"
 }

@@ -22,6 +22,9 @@ resource "azurerm_api_management" "this" {
     subnet_id = azurerm_subnet.apim.id
   }
 
+  # APIM requires NSG to be associated with subnet before deployment
+  depends_on = [azurerm_subnet_network_security_group_association.apim]
+
   # Security and authentication settings
   sign_in {
     enabled = false

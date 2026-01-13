@@ -15,25 +15,19 @@ resource "azapi_resource" "api_center" {
   tags = local.common_tags
 }
 
-# API Center workspace for organizing APIs
-resource "azapi_resource" "api_center_workspace" {
+# Use the default workspace that Azure API Center creates automatically
+# Azure API Center has a limit of 1 workspace per service, and it creates "default" automatically
+data "azapi_resource" "api_center_workspace" {
   type      = "Microsoft.ApiCenter/services/workspaces@2024-03-01"
-  name      = "main-workspace"
+  name      = "default"
   parent_id = azapi_resource.api_center.id
-
-  body = {
-    properties = {
-      title       = "Main Workspace"
-      description = "Primary workspace for AI Foundation APIs"
-    }
-  }
 }
 
 # API Center environment for different deployment stages
 resource "azapi_resource" "api_center_environment" {
   type      = "Microsoft.ApiCenter/services/workspaces/environments@2024-03-01"
   name      = "development"
-  parent_id = azapi_resource.api_center_workspace.id
+  parent_id = data.azapi_resource.api_center_workspace.id
 
   body = {
     properties = {
@@ -60,7 +54,7 @@ resource "azapi_resource" "api_center_environment" {
 resource "azapi_resource" "crud_mcp_api" {
   type      = "Microsoft.ApiCenter/services/workspaces/apis@2024-03-01"
   name      = "crud-mcp-server"
-  parent_id = azapi_resource.api_center_workspace.id
+  parent_id = data.azapi_resource.api_center_workspace.id
 
   body = {
     properties = {
@@ -153,7 +147,7 @@ resource "azapi_resource" "crud_api_deployment" {
     properties = {
       title         = "Development Deployment"
       description   = "CRUD MCP server deployed in development environment"
-      environmentId = "/workspaces/${azapi_resource.api_center_workspace.name}/environments/${azapi_resource.api_center_environment.name}"
+      environmentId = "/workspaces/${data.azapi_resource.api_center_workspace.name}/environments/${azapi_resource.api_center_environment.name}"
       definitionId  = "/versions/${azapi_resource.crud_api_version.name}/definitions/openapi"
       server = {
         runtimeUri = [
