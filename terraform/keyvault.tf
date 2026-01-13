@@ -1,0 +1,68 @@
+# Key Vault for secure secrets management
+resource "azurerm_key_vault" "this" {
+  name                = local.key_vault_name
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  sku_name            = "standard"
+
+  # Security configurations following Azure Key Vault Security Baseline
+  enabled_for_deployment          = false
+  enabled_for_disk_encryption     = false
+  enabled_for_template_deployment = false
+  rbac_authorization_enabled      = true
+  purge_protection_enabled        = true
+  soft_delete_retention_days      = 7
+  public_network_access_enabled   = true # Will use firewall rules for restriction
+
+  network_acls {
+    bypass                     = "AzureServices"
+    default_action             = "Deny"
+    virtual_network_subnet_ids = [azurerm_subnet.func.id, azurerm_subnet.apim.id]
+  }
+
+  tags = local.common_tags
+}
+
+# Key Vault access policy for current user/service principal
+resource "azurerm_role_assignment" "kv_admin" {
+  count = var.admin_object_id != null ? 1 : 0
+
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = var.admin_object_id != null ? var.admin_object_id : data.azurerm_client_config.current.object_id
+}
+
+# Key Vault access policy for deployment service principal
+resource "azurerm_role_assignment" "kv_admin_current" {
+  scope                = azurerm_key_vault.this.id
+  role_definition_name = "Key Vault Administrator"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
+
+# Store storage account connection string as secret
+resource "azurerm_key_vault_secret" "storage_connection_string" {
+  name         = "storage-connection-string"
+  value        = azurerm_storage_account.this.primary_connection_string
+  key_vault_id = azurerm_key_vault.this.id
+
+  depends_on = [azurerm_role_assignment.kv_admin_current]
+
+  tags = local.common_tags
+}
+
+# Generate and store API key for Function App authentication
+resource "random_password" "api_key" {
+  length  = 32
+  special = true
+}
+
+resource "azurerm_key_vault_secret" "function_api_key" {
+  name         = "function-api-key"
+  value        = random_password.api_key.result
+  key_vault_id = azurerm_key_vault.this.id
+
+  depends_on = [azurerm_role_assignment.kv_admin_current]
+
+  tags = local.common_tags
+}
