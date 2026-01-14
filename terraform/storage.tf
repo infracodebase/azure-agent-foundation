@@ -33,12 +33,14 @@ resource "azurerm_storage_account" "this" {
   tags = local.common_tags
 }
 
-# Storage Account network rules
+# Storage Account network rules (only when private networking is enabled)
 resource "azurerm_storage_account_network_rules" "this" {
+  count = var.enable_private_networking ? 1 : 0
+
   storage_account_id = azurerm_storage_account.this.id
 
   default_action             = "Deny"
-  ip_rules                   = []
+  ip_rules                   = [chomp(data.http.current_ip.response_body)]
   virtual_network_subnet_ids = [azurerm_subnet.func.id]
   bypass                     = ["AzureServices", "Metrics", "Logging"]
 }

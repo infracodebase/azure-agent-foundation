@@ -106,10 +106,28 @@ resource "azapi_resource" "crud_api_version" {
   }
 }
 
-# Import API specification directly from API Management
+# Create API definition resource first
+resource "azapi_resource" "crud_api_definition" {
+  type      = "Microsoft.ApiCenter/services/workspaces/apis/versions/definitions@2024-03-01"
+  name      = "openapi"
+  parent_id = azapi_resource.crud_api_version.id
+
+  body = {
+    properties = {
+      title       = "OpenAPI Definition"
+      description = "OpenAPI 3.0 specification for CRUD MCP Server API"
+    }
+  }
+}
+
+# Import API specification from API Management (updates the definition)
+# DISABLED: API Center can't reach APIM gateway URL from Azure's infrastructure
+# Import spec manually via Azure Portal after deployment
 resource "azapi_resource_action" "import_api_spec" {
+  count = 0
+
   type        = "Microsoft.ApiCenter/services/workspaces/apis/versions/definitions@2024-03-01"
-  resource_id = "${azapi_resource.crud_api_version.id}/definitions/openapi"
+  resource_id = azapi_resource.crud_api_definition.id
   action      = "importSpecification"
   method      = "POST"
 
@@ -123,18 +141,10 @@ resource "azapi_resource_action" "import_api_spec" {
   }
 
   depends_on = [
+    azurerm_api_management.this,
     azurerm_api_management_api.crud_api,
-    azapi_resource.crud_api_version
+    azapi_resource.crud_api_definition
   ]
-}
-
-# The definition resource is created automatically by the import action
-data "azapi_resource" "crud_api_definition" {
-  type      = "Microsoft.ApiCenter/services/workspaces/apis/versions/definitions@2024-03-01"
-  name      = "openapi"
-  parent_id = azapi_resource.crud_api_version.id
-
-  depends_on = [azapi_resource_action.import_api_spec]
 }
 
 # API deployment linking to API Management
@@ -148,7 +158,7 @@ resource "azapi_resource" "crud_api_deployment" {
       title         = "Development Deployment"
       description   = "CRUD MCP server deployed in development environment"
       environmentId = "/workspaces/${data.azapi_resource.api_center_workspace.name}/environments/${azapi_resource.api_center_environment.name}"
-      definitionId  = "/versions/${azapi_resource.crud_api_version.name}/definitions/openapi"
+      definitionId  = "/workspaces/${data.azapi_resource.api_center_workspace.name}/apis/${azapi_resource.crud_mcp_api.name}/versions/${azapi_resource.crud_api_version.name}/definitions/${azapi_resource.crud_api_definition.name}"
       server = {
         runtimeUri = [
           "${azurerm_api_management.this.gateway_url}/api"
@@ -156,6 +166,8 @@ resource "azapi_resource" "crud_api_deployment" {
       }
     }
   }
+
+  depends_on = [azapi_resource.crud_api_definition]
 }
 
 # Output the API Center information

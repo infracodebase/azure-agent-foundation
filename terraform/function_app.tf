@@ -20,10 +20,10 @@ resource "azurerm_linux_function_app" "this" {
 
   # Security configurations following Azure Functions Security Baseline
   https_only                    = true
-  public_network_access_enabled = true # Will be restricted via network integration
+  public_network_access_enabled = true
 
-  # Enable virtual network integration
-  virtual_network_subnet_id = azurerm_subnet.func.id
+  # Enable virtual network integration (only when private networking is enabled)
+  virtual_network_subnet_id = var.enable_private_networking ? azurerm_subnet.func.id : null
 
   identity {
     type = "SystemAssigned"

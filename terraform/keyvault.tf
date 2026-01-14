@@ -15,10 +15,14 @@ resource "azurerm_key_vault" "this" {
   soft_delete_retention_days      = 7
   public_network_access_enabled   = true # Will use firewall rules for restriction
 
-  network_acls {
-    bypass                     = "AzureServices"
-    default_action             = "Deny"
-    virtual_network_subnet_ids = [azurerm_subnet.func.id, azurerm_subnet.apim.id]
+  dynamic "network_acls" {
+    for_each = var.enable_private_networking ? [1] : []
+    content {
+      bypass                     = "AzureServices"
+      default_action             = "Deny"
+      ip_rules                   = [chomp(data.http.current_ip.response_body)]
+      virtual_network_subnet_ids = [azurerm_subnet.func.id, azurerm_subnet.apim.id]
+    }
   }
 
   tags = local.common_tags

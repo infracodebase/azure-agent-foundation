@@ -1,0 +1,201 @@
+# Azure AI Foundation
+
+Infrastructure and API for exposing REST APIs as MCP (Model Context Protocol) servers using Azure API Management.
+
+## Architecture
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   MCP Client    │────▶│  Azure APIM     │────▶│  Function App   │
+│ (Claude, etc.)  │     │  (MCP Server)   │     │  (CRUD API)     │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                              │
+                              ▼
+                        ┌─────────────────┐
+                        │  API Center     │
+                        │  (Discovery)    │
+                        └─────────────────┘
+```
+
+## Prerequisites
+
+- [Terraform](https://terraform.io) >= 1.12
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+- [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) v4
+- Python 3.11
+
+## Deployment
+
+### 1. Deploy Infrastructure
+
+```bash
+cd terraform
+
+# Initialize Terraform
+terraform init
+
+# Review the plan
+terraform plan
+
+# Deploy (takes ~30-45 mins for APIM)
+terraform apply
+```
+
+**Note**: Azure API Management takes 30-45 minutes to provision.
+
+### 2. Deploy Function App Code
+
+After infrastructure is deployed:
+
+```bash
+cd api/function_app
+
+# Get your function app name from Terraform output
+FUNC_APP_NAME=$(cd ../../terraform && terraform output -raw function_app_name)
+
+# Deploy the code
+func azure functionapp publish $FUNC_APP_NAME --python
+```
+
+### 3. Enable MCP Server Feature (Portal)
+
+The MCP server feature requires manual enablement:
+
+1. Go to Azure Portal → API Management instance
+2. Navigate to **Deployment + Infrastructure** → **Service update settings**
+3. Change **Update group** to **"AI Gateway Early (GenAI release channel)"**
+4. Wait ~2 hours for propagation
+
+Or access directly with feature flag:
+```
+https://portal.azure.com/?Microsoft_Azure_ApiManagement=mcp
+```
+
+### 4. Verify Deployment
+
+```bash
+# Test Function App directly
+FUNC_KEY=$(az functionapp keys list --name $FUNC_APP_NAME --resource-group ai-foundation-dev-rg --query 'functionKeys.default' -o tsv)
+curl "https://$FUNC_APP_NAME.azurewebsites.net/api/items?code=$FUNC_KEY"
+
+# Test through APIM
+APIM_URL=$(cd terraform && terraform output -raw api_management_gateway_url)
+# Use subscription key from Azure Portal or Terraform output
+curl "$APIM_URL/api/items" -H "Ocp-Apim-Subscription-Key: <your-key>"
+```
+
+## Configuration
+
+### Public vs Private Networking
+
+By default, resources are deployed with public networking. To enable private networking (VNet integration):
+
+```bash
+terraform apply \
+  -var="enable_private_networking=true" \
+  -var="function_app_service_plan_sku=EP1"
+```
+
+**Note**: Private networking requires:
+- EP1 or higher Function App SKU (~$150/month)
+- A VNet-connected deployment agent
+
+### Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `enable_private_networking` | `false` | Enable VNet integration and firewalls |
+| `function_app_service_plan_sku` | `Y1` | Function App SKU (Y1=Consumption, EP1+=Premium) |
+| `api_management_sku` | `Developer_1` | APIM SKU |
+| `environment` | `dev` | Environment name |
+| `location` | `East US` | Azure region |
+
+## API Endpoints
+
+The Function App exposes these CRUD endpoints:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/items` | List all items |
+| POST | `/api/items` | Create new item |
+| GET | `/api/items/{id}` | Get item by ID |
+| PUT | `/api/items/{id}` | Update item |
+| DELETE | `/api/items/{id}` | Delete item |
+| GET | `/api/health` | Health check |
+
+## MCP Server
+
+Once enabled, the MCP server exposes these tools to AI agents:
+
+- `getAllItems` - Retrieve all items
+- `createItem` - Create a new item
+- `getItemById` - Get item by ID
+- `updateItem` - Update an item
+- `deleteItem` - Delete an item
+
+### Connecting Claude Desktop
+
+Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "crud-api": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://<apim-name>.azure-api.net/crud-mcp/mcp"],
+      "env": {
+        "API_KEY": "<your-subscription-key>"
+      }
+    }
+  }
+}
+```
+
+## Project Structure
+
+```
+.
+├── api/
+│   └── function_app/       # Python Azure Function App
+│       ├── function_app.py # CRUD endpoints
+│       ├── host.json
+│       └── requirements.txt
+├── terraform/              # Infrastructure as Code
+│   ├── main.tf            # VNet, subnets, NSG
+│   ├── api_management.tf  # APIM + MCP server
+│   ├── api_center.tf      # API Center for discovery
+│   ├── function_app.tf    # Function App + App Insights
+│   ├── keyvault.tf        # Key Vault for secrets
+│   ├── storage.tf         # Storage account
+│   └── variables.tf       # Configuration variables
+└── README.md
+```
+
+## Schema Management
+
+The API schema is defined inline in Terraform (`api_management.tf`). This approach:
+
+- **Pros**: Single source of truth, no chicken-and-egg deployment problem
+- **Cons**: Schema is duplicated (Terraform + Function App code must match)
+
+Alternative approaches:
+1. Function App exposes `/openapi.json` → APIM imports (requires 2-phase deploy)
+2. Shared OpenAPI spec file referenced by both Terraform and Function App
+
+## Troubleshooting
+
+### APIM returns 401 Unauthorized
+- Check subscription key is correct
+- Verify the API subscription is active in Azure Portal
+
+### Function App returns 401
+- Include the function key: `?code=<function-key>`
+
+### MCP Server not visible in Portal
+- Ensure "AI Gateway Early" update group is enabled
+- Wait up to 2 hours after enabling
+- Try portal URL with `?Microsoft_Azure_ApiManagement=mcp` flag
+
+### Terraform errors during apply
+- APIM takes 30-45 mins to deploy - be patient
+- Some resources may fail on first apply if dependencies aren't ready - run `terraform apply` again

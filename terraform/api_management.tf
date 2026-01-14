@@ -16,13 +16,17 @@ resource "azurerm_api_management" "this" {
     type = "SystemAssigned"
   }
 
-  # Virtual network configuration for secure connectivity
-  virtual_network_type = "External"
-  virtual_network_configuration {
-    subnet_id = azurerm_subnet.apim.id
+  # Virtual network configuration (only when private networking is enabled)
+  virtual_network_type = var.enable_private_networking ? "External" : "None"
+
+  dynamic "virtual_network_configuration" {
+    for_each = var.enable_private_networking ? [1] : []
+    content {
+      subnet_id = azurerm_subnet.apim.id
+    }
   }
 
-  # APIM requires NSG to be associated with subnet before deployment
+  # APIM requires NSG to be associated with subnet before deployment (when using VNet)
   depends_on = [azurerm_subnet_network_security_group_association.apim]
 
   # Security and authentication settings
@@ -95,6 +99,7 @@ resource "azurerm_role_assignment" "apim_kv_access" {
 }
 
 # API for the Function App CRUD service
+# APIM's MCP server feature will expose these operations as MCP tools automatically
 resource "azurerm_api_management_api" "crud_api" {
   name                  = "crud-api"
   resource_group_name   = azurerm_resource_group.this.name
@@ -111,168 +116,15 @@ resource "azurerm_api_management_api" "crud_api" {
     content_value = jsonencode({
       openapi = "3.0.0"
       info = {
-        title       = "CRUD MCP Server"
+        title       = "CRUD API"
         version     = "1.0.0"
-        description = "Model Context Protocol server providing CRUD operations for AI agents"
-        "x-mcp-server" = {
-          name = "crud-mcp-server"
-          version = "1.0.0"
-          protocol_version = "2024-11-05"
-        }
+        description = "REST API providing CRUD operations - exposed as MCP tools via APIM"
       }
       servers = [{
         url = "https://${azurerm_api_management.this.gateway_url}/api"
       }]
       paths = {
-        # MCP Server Information Endpoint (required for MCP)
-        "/mcp/info" = {
-          get = {
-            summary     = "Get MCP server information"
-            description = "Returns server capabilities and metadata for MCP clients"
-            operationId = "getMCPInfo"
-            tags        = ["MCP"]
-            responses = {
-              "200" = {
-                description = "Server information"
-                content = {
-                  "application/json" = {
-                    schema = {
-                      type = "object"
-                      properties = {
-                        name             = { type = "string" }
-                        version          = { type = "string" }
-                        protocol_version = { type = "string" }
-                        capabilities = {
-                          type = "object"
-                          properties = {
-                            resources = { type = "boolean" }
-                            tools     = { type = "boolean" }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        # MCP Resources Endpoint
-        "/mcp/resources" = {
-          get = {
-            summary     = "List available resources"
-            description = "Returns list of resources available through this MCP server"
-            operationId = "listMCPResources"
-            tags        = ["MCP"]
-            responses = {
-              "200" = {
-                description = "List of available resources"
-                content = {
-                  "application/json" = {
-                    schema = {
-                      type = "object"
-                      properties = {
-                        resources = {
-                          type = "array"
-                          items = {
-                            type = "object"
-                            properties = {
-                              uri         = { type = "string" }
-                              name        = { type = "string" }
-                              description = { type = "string" }
-                              mimeType    = { type = "string" }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        # MCP Tools Endpoint
-        "/mcp/tools" = {
-          get = {
-            summary     = "List available tools"
-            description = "Returns list of tools available through this MCP server"
-            operationId = "listMCPTools"
-            tags        = ["MCP"]
-            responses = {
-              "200" = {
-                description = "List of available tools"
-                content = {
-                  "application/json" = {
-                    schema = {
-                      type = "object"
-                      properties = {
-                        tools = {
-                          type = "array"
-                          items = {
-                            type = "object"
-                            properties = {
-                              name        = { type = "string" }
-                              description = { type = "string" }
-                              inputSchema = { type = "object" }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-          post = {
-            summary     = "Execute MCP tool"
-            description = "Execute a tool through the MCP server"
-            operationId = "executeMCPTool"
-            tags        = ["MCP"]
-            requestBody = {
-              required = true
-              content = {
-                "application/json" = {
-                  schema = {
-                    type = "object"
-                    properties = {
-                      name      = { type = "string" }
-                      arguments = { type = "object" }
-                    }
-                    required = ["name"]
-                  }
-                }
-              }
-            }
-            responses = {
-              "200" = {
-                description = "Tool execution result"
-                content = {
-                  "application/json" = {
-                    schema = {
-                      type = "object"
-                      properties = {
-                        content = {
-                          type = "array"
-                          items = {
-                            type = "object"
-                            properties = {
-                              type = { type = "string" }
-                              text = { type = "string" }
-                            }
-                          }
-                        }
-                        isError = { type = "boolean" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        # Standard CRUD operations (MCP tools)
+        # CRUD operations - APIM MCP server exposes these as tools automatically
         "/items" = {
           get = {
             summary     = "Get all items"
@@ -480,53 +332,51 @@ resource "azurerm_api_management_subscription" "crud_api_subscription" {
 # 2. Create the MCP server manually in Azure portal as documented
 # 3. Wait for the API to become generally available
 
-# Primary approach: Use direct REST API call to create MCP server
+# MCP Server - exposes REST API as Model Context Protocol server for AI agents
+# This creates an API with type="mcp" that references operations from the source API
 resource "azapi_resource" "mcp_server" {
-  type      = "Microsoft.ApiManagement/service/mcpServers@2024-05-01"
-  name      = "crud-mcp-server"
+  type      = "Microsoft.ApiManagement/service/apis@2025-03-01-preview"
+  name      = "crud-mcp"
   parent_id = azurerm_api_management.this.id
 
-  # Disable schema validation for preview features
   schema_validation_enabled = false
 
-  body = jsonencode({
+  body = {
     properties = {
-      displayName = "CRUD MCP Server"
-      description = "MCP server exposing CRUD operations for AI agents"
-      backendMcpServer = {
-        apiId = azurerm_api_management_api.crud_api.id
-        selectedOperations = [
-          {
-            operationId = "GetItems"
-            displayName = "Get Items"
-          },
-          {
-            operationId = "CreateItem"
-            displayName = "Create Item"
-          },
-          {
-            operationId = "GetItemById"
-            displayName = "Get Item By ID"
-          },
-          {
-            operationId = "UpdateItem"
-            displayName = "Update Item"
-          },
-          {
-            operationId = "DeleteItem"
-            displayName = "Delete Item"
-          }
-        ]
-      }
+      displayName         = "CRUD MCP Server"
+      path                = "crud-mcp"
+      protocols           = ["https"]
+      subscriptionRequired = false
+      type                = "mcp"
+      mcpTools = [
+        {
+          name        = "getAllItems"
+          description = "Retrieve all items from the data store"
+          operationId = "${azurerm_api_management.this.id}/apis/${azurerm_api_management_api.crud_api.name}/operations/GetItems"
+        },
+        {
+          name        = "createItem"
+          description = "Create a new item in the data store"
+          operationId = "${azurerm_api_management.this.id}/apis/${azurerm_api_management_api.crud_api.name}/operations/CreateItem"
+        },
+        {
+          name        = "getItemById"
+          description = "Retrieve a specific item by its ID"
+          operationId = "${azurerm_api_management.this.id}/apis/${azurerm_api_management_api.crud_api.name}/operations/GetItemById"
+        },
+        {
+          name        = "updateItem"
+          description = "Update an existing item in the data store"
+          operationId = "${azurerm_api_management.this.id}/apis/${azurerm_api_management_api.crud_api.name}/operations/UpdateItem"
+        },
+        {
+          name        = "deleteItem"
+          description = "Remove an item from the data store"
+          operationId = "${azurerm_api_management.this.id}/apis/${azurerm_api_management_api.crud_api.name}/operations/DeleteItem"
+        }
+      ]
     }
-  })
+  }
 
   depends_on = [azurerm_api_management_api.crud_api]
-
-  lifecycle {
-    ignore_changes = [
-      # Ignore changes to body if the API evolves
-      body
-    ]
-  }
 }

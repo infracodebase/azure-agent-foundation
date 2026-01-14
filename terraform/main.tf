@@ -6,6 +6,11 @@ resource "random_id" "this" {
 # Get current client configuration
 data "azurerm_client_config" "current" {}
 
+# Get current public IP for firewall rules (allows Terraform to access Key Vault)
+data "http" "current_ip" {
+  url = "https://api.ipify.org?format=text"
+}
+
 # Resource Group
 resource "azurerm_resource_group" "this" {
   name     = local.resource_group_name
@@ -28,6 +33,7 @@ resource "azurerm_subnet" "apim" {
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = [local.apim_subnet_prefix]
+  service_endpoints    = ["Microsoft.KeyVault"]
 }
 
 # Subnet for Function App
@@ -36,6 +42,7 @@ resource "azurerm_subnet" "func" {
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = [local.func_subnet_prefix]
+  service_endpoints    = ["Microsoft.KeyVault", "Microsoft.Storage"]
 
   delegation {
     name = "Microsoft.Web.serverFarms"
