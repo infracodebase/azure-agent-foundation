@@ -7,6 +7,13 @@ resource "azurerm_service_plan" "function_app" {
   sku_name            = var.function_app_service_plan_sku
 
   tags = local.common_tags
+
+  lifecycle {
+    precondition {
+      condition     = !var.enable_private_networking || !startswith(var.function_app_service_plan_sku, "Y")
+      error_message = "Private networking requires a Premium SKU (EP1 or higher), not consumption (Y1). Set function_app_service_plan_sku to 'EP1' or higher."
+    }
+  }
 }
 
 # Function App with secure configuration
