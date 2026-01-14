@@ -32,8 +32,22 @@ resource "azurerm_role_assignment" "ai_hub_kv_access" {
   principal_id         = azurerm_cognitive_account.ai_foundry.identity[0].principal_id
 }
 
-# Note: Azure OpenAI models are integrated directly into AI Foundry
-# OpenAI models can be deployed through the AI Foundry portal or via API
+# Deploy GPT-4o-mini model (cost-effective for development)
+resource "azurerm_cognitive_deployment" "gpt4o_mini" {
+  name                 = "gpt-4o-mini"
+  cognitive_account_id = azurerm_cognitive_account.ai_foundry.id
+
+  model {
+    format  = "OpenAI"
+    name    = "gpt-4o-mini"
+    version = "2024-07-18"
+  }
+
+  sku {
+    name     = "Standard"
+    capacity = 10 # Tokens per minute in thousands
+  }
+}
 
 # Compute instance for development (optional - commented out)
 # Uncomment and provide valid SSH public key when needed

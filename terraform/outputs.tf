@@ -60,6 +60,11 @@ output "ai_foundry_endpoint" {
   value       = azurerm_cognitive_account.ai_foundry.endpoint
 }
 
+output "gpt4o_mini_deployment" {
+  description = "GPT-4o-mini model deployment name"
+  value       = azurerm_cognitive_deployment.gpt4o_mini.name
+}
+
 output "container_app_name" {
   description = "Name of the Container App"
   value       = azurerm_container_app.chat_interface.name
