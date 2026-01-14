@@ -213,46 +213,12 @@ Once enabled, the MCP server exposes these tools to AI agents:
 - `updateItem` - Update an item
 - `deleteItem` - Delete an item
 
-### Connecting Claude Desktop
-
-Get your MCP endpoint and subscription key from Terraform:
+### Connecting to Claude
 
 ```bash
-cd terraform
-export MCP_ENDPOINT=$(terraform output -raw mcp_server_endpoint)
-export SUB_KEY=$(terraform output -raw api_subscription_key)
-```
-
-**Claude Code** (recommended):
-
-```bash
-claude mcp add --transport http crud-api "$MCP_ENDPOINT" \
+claude mcp add --transport http crud-api "$APIM_URL/crud-mcp/mcp" \
   --header "Ocp-Apim-Subscription-Key: $SUB_KEY"
 ```
-
-**Claude Desktop** - edit config file:
-
-```bash
-# macOS - create if it doesn't exist
-mkdir -p "$HOME/Library/Application Support/Claude"
-open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
-
-# Windows: %APPDATA%\Claude\claude_desktop_config.json
-# Linux: ~/.config/Claude/claude_desktop_config.json
-```
-
-```json
-{
-  "mcpServers": {
-    "crud-api": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "<MCP_ENDPOINT>", "--header", "Ocp-Apim-Subscription-Key: <SUB_KEY>"]
-    }
-  }
-}
-```
-
-Note: Claude Desktop requires `mcp-remote` as a bridge. Claude Code's native HTTP transport is preferred.
 
 ### VS Code with API Center
 
