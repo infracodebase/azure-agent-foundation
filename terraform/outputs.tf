@@ -90,3 +90,13 @@ output "mcp_server_endpoint" {
   description = "MCP server endpoint URL for AI agents"
   value       = "${azurerm_api_management.this.gateway_url}/crud-mcp/mcp"
 }
+
+# output "foundry_agent_id" {
+#   description = "ID of the Azure AI Foundry agent"
+#   value       = azapi_resource.foundry_agent.id
+# }
+
+# output "foundry_agent_name" {
+#   description = "Name of the Azure AI Foundry agent"
+#   value       = azapi_resource.foundry_agent.name
+# }

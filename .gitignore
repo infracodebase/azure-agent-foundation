@@ -38,3 +38,8 @@ local.settings.json
 
 # Plan files
 tfplan
+
+# Experimental/investigation files
+check_newer_sdk.sh
+try_newer_sdk.py
+INVESTIGATE_AGENTS.md
