@@ -8,7 +8,9 @@ The infrastructure deploys a complete Azure AI Foundation with:
 
 - **API Management** - Exposes Function App as MCP server
 - **Function App** - CRUD REST service (MCP server implementation)
-- **Azure AI Foundry** - Modern AI services for agent management
+- **Azure AI Foundry** - Modern AI services with hub, project, and agent management
+  - GPT-4o-mini model deployment for cost-effective development
+  - Pre-configured AI agents (sample, customer support, data analysis)
 - **API Center** - API governance and discovery
 - **Container Apps** - Chat interface application
 - **Key Vault** - Secure secrets management
@@ -70,6 +72,16 @@ After deployment, Terraform provides these key outputs:
 
 ## 🔧 Features
 
+### AI Agents
+- ✅ Azure AI Foundry hub and project configuration
+- ✅ GPT-4o-mini model deployment (cost-effective)
+- ✅ Pre-configured agents using azapi provider:
+  - Sample Agent - General-purpose AI assistant
+  - Customer Support Agent - Specialized for customer interactions
+  - Data Analysis Agent - Focused on data processing and insights
+- ✅ Code interpreter and retrieval tools enabled
+- ✅ Customizable agent instructions and parameters
+
 ### MCP Server Support
 - ✅ Automated MCP server creation (no manual steps)
 - ✅ Full MCP protocol compliance (2024-11-05)
@@ -110,4 +122,22 @@ After infrastructure deployment:
 1. Deploy the API code to the Function App
 2. Deploy the chat interface to Container Apps
 3. Test the MCP server endpoints
-4. Configure AI agents to use the MCP server
+4. Access AI Foundry agents in Azure Portal or via SDK
+5. Customize agent configurations in `foundry-agents.tf`
+
+## 📁 File Structure
+
+- `main.tf` - Core infrastructure (resource group, networking)
+- `foundry.tf` - Azure AI Foundry hub, project, and model deployment
+- `foundry-agents.tf` - AI agent definitions using azapi provider
+- `function_app.tf` - Azure Function App for MCP server
+- `api_management.tf` - API Management gateway configuration
+- `api_center.tf` - API governance and discovery
+- `container_apps.tf` - Container Apps for chat interface
+- `keyvault.tf` - Key Vault and secrets management
+- `storage.tf` - Storage account configuration
+- `variables.tf` - Input variables
+- `outputs.tf` - Output values
+- `providers.tf` - Provider configurations
+- `terraform.tf` - Terraform and provider version constraints
+- `locals.tf` - Local values and naming conventions

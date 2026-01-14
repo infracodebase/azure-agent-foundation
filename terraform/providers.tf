@@ -13,6 +13,8 @@ provider "azurerm" {
 
 provider "azuread" {}
 
+provider "azapi" {}
+
 provider "random" {}
 
 provider "http" {}
