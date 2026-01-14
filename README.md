@@ -71,18 +71,79 @@ Or access directly with feature flag:
 https://portal.azure.com/?Microsoft_Azure_ApiManagement=mcp
 ```
 
-### 4. Verify Deployment
+### 4. Test Your Deployment
+
+After deployment, test at each layer to verify everything is working.
+
+#### Get Credentials
 
 ```bash
-# Test Function App directly
+cd terraform
+
+# Function App name and key
+FUNC_APP_NAME=$(terraform output -raw function_app_name)
 FUNC_KEY=$(az functionapp keys list --name $FUNC_APP_NAME --resource-group ai-foundation-dev-rg --query 'functionKeys.default' -o tsv)
+
+# APIM URL and subscription key
+APIM_URL=$(terraform output -raw api_management_gateway_url)
+SUB_KEY=$(terraform output -raw api_subscription_key)
+```
+
+#### Test Function App Directly
+
+```bash
+# Health check
+curl "https://$FUNC_APP_NAME.azurewebsites.net/api/health?code=$FUNC_KEY"
+
+# List items
 curl "https://$FUNC_APP_NAME.azurewebsites.net/api/items?code=$FUNC_KEY"
 
-# Test through APIM
-APIM_URL=$(cd terraform && terraform output -raw api_management_gateway_url)
-# Use subscription key from Azure Portal or Terraform output
-curl "$APIM_URL/api/items" -H "Ocp-Apim-Subscription-Key: <your-key>"
+# Create item
+curl -X POST "https://$FUNC_APP_NAME.azurewebsites.net/api/items?code=$FUNC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Test Item","description":"Direct Function App call"}'
 ```
+
+#### Test APIM REST API
+
+```bash
+# List items through APIM
+curl "$APIM_URL/api/items" -H "Ocp-Apim-Subscription-Key: $SUB_KEY"
+
+# Create item through APIM
+curl -X POST "$APIM_URL/api/items" \
+  -H "Content-Type: application/json" \
+  -H "Ocp-Apim-Subscription-Key: $SUB_KEY" \
+  -d '{"name":"APIM Item","description":"Created through APIM REST"}'
+```
+
+#### Test MCP Server
+
+The MCP server uses JSON-RPC over HTTP with Server-Sent Events (SSE):
+
+```bash
+# Initialize MCP session
+curl -X POST "$APIM_URL/crud-mcp/mcp" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}},"id":1}'
+
+# List available tools
+curl -X POST "$APIM_URL/crud-mcp/mcp" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"tools/list","id":2}'
+
+# Call getAllItems tool
+curl -X POST "$APIM_URL/crud-mcp/mcp" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"getAllItems","arguments":{}},"id":3}'
+
+# Call createItem tool
+curl -X POST "$APIM_URL/crud-mcp/mcp" \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"createItem","arguments":{"ItemsPostRequest":{"name":"MCP Item","description":"Created via MCP"}}},"id":4}'
+```
+
+**Note**: MCP responses use SSE format with `event:` and `data:` lines. The curl commands may timeout waiting for the stream to close - this is expected.
 
 ## Configuration
 
@@ -124,6 +185,31 @@ The Function App exposes these CRUD endpoints:
 | GET | `/api/health` | Health check |
 
 ## MCP Server
+
+### How It Works
+
+The APIM MCP server feature converts REST API operations into MCP tools. To create an MCP server, you need:
+
+1. **A source REST API** - A standard APIM API with defined operations (OpenAPI spec)
+2. **An MCP Server API** - A separate APIM API with `type: "mcp"` that references operations from the source API
+
+The MCP server doesn't implement its own backend - it wraps existing REST operations as MCP tools. Each tool in `mcpTools` references an `operationId` from your source API:
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│   MCP Client    │────▶│  MCP Server API │────▶│  REST API       │────▶ Backend
+│                 │     │  (type: "mcp")  │     │  (source)       │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                              │
+                              │ references operationIds
+                              ▼
+                        mcpTools: [
+                          { name: "getAllItems", operationId: ".../GetItems" },
+                          { name: "createItem", operationId: ".../CreateItem" }
+                        ]
+```
+
+### Available Tools
 
 Once enabled, the MCP server exposes these tools to AI agents:
 
