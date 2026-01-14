@@ -57,37 +57,31 @@ FUNC_APP_NAME=$(cd ../../terraform && terraform output -raw function_app_name)
 func azure functionapp publish $FUNC_APP_NAME --python
 ```
 
-### 3. Enable MCP Server Feature (Portal)
+### 3. Set Up Environment Variables
 
-The MCP server feature requires manual enablement:
-
-1. Go to Azure Portal → API Management instance
-2. Navigate to **Deployment + Infrastructure** → **Service update settings**
-3. Change **Update group** to **"AI Gateway Early (GenAI release channel)"**
-4. Wait ~2 hours for propagation
-
-Or access directly with feature flag:
-```
-https://portal.azure.com/?Microsoft_Azure_ApiManagement=mcp
-```
-
-### 4. Test Your Deployment
-
-After deployment, test at each layer to verify everything is working.
-
-#### Get Credentials
+Run this from the `terraform` directory to export all variables needed for testing:
 
 ```bash
 cd terraform
 
-# Function App name and key
-FUNC_APP_NAME=$(terraform output -raw function_app_name)
-FUNC_KEY=$(az functionapp keys list --name $FUNC_APP_NAME --resource-group ai-foundation-dev-rg --query 'functionKeys.default' -o tsv)
+# Export all environment variables for testing
+export RG_NAME=$(terraform output -raw resource_group_name)
+export FUNC_APP_NAME=$(terraform output -raw function_app_name)
+export FUNC_KEY=$(az functionapp keys list --name $FUNC_APP_NAME --resource-group $RG_NAME --query 'functionKeys.default' -o tsv)
+export APIM_URL=$(terraform output -raw api_management_gateway_url)
+export SUB_KEY=$(terraform output -raw api_subscription_key)
 
-# APIM URL and subscription key
-APIM_URL=$(terraform output -raw api_management_gateway_url)
-SUB_KEY=$(terraform output -raw api_subscription_key)
+# Verify variables are set
+echo "Resource Group: $RG_NAME"
+echo "Function App:   $FUNC_APP_NAME"
+echo "APIM URL:       $APIM_URL"
 ```
+
+**Tip**: Add these to a `.env` file or your shell profile to persist across sessions.
+
+### 4. Test Your Deployment
+
+After running the setup above, test at each layer to verify everything is working.
 
 #### Test Function App Directly
 
@@ -278,9 +272,9 @@ Alternative approaches:
 - Include the function key: `?code=<function-key>`
 
 ### MCP Server not visible in Portal
-- Ensure "AI Gateway Early" update group is enabled
-- Wait up to 2 hours after enabling
-- Try portal URL with `?Microsoft_Azure_ApiManagement=mcp` flag
+- The MCP server is created via Terraform using preview APIs - it works even if not visible in Portal
+- To see MCP servers in Portal UI, try: `https://portal.azure.com/?Microsoft_Azure_ApiManagement=mcp`
+- You can verify MCP server exists via CLI: `az rest --method GET --uri "https://management.azure.com{apim-id}/apis?api-version=2025-03-01-preview"`
 
 ### Terraform errors during apply
 - APIM takes 30-45 mins to deploy - be patient
