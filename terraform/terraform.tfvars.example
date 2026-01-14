@@ -1,0 +1,35 @@
+# Copy this file to terraform.tfvars and customize values
+# terraform.tfvars is gitignored to protect sensitive values
+
+# Azure region for deployment
+location = "East US"
+
+# Environment name (dev, staging, prod)
+environment = "dev"
+
+# Project name used as prefix for all resources
+project_name = "ai-foundation"
+
+# Optional: Your Azure AD Object ID for Key Vault admin access
+# Find with: az ad signed-in-user show --query id -o tsv
+# admin_object_id = "00000000-0000-0000-0000-000000000000"
+
+# Networking mode:
+# - false (default): Public deployment, no VNet, consumption SKU OK
+# - true: Private networking with VNet integration, requires Premium SKUs
+enable_private_networking = false
+
+# API Management SKU (Developer_1 is cheapest for dev/test)
+api_management_sku = "Developer_1"
+
+# Function App SKU:
+# - Y1: Consumption (serverless, pay-per-execution) - public only
+# - EP1, EP2, EP3: Premium (VNet integration) - required for private networking
+function_app_service_plan_sku = "Y1"
+
+# Resource tags
+tags = {
+  Project     = "AI Foundation"
+  Environment = "Development"
+  ManagedBy   = "Terraform"
+}
