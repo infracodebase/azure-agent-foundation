@@ -32,6 +32,27 @@ resource "azurerm_role_assignment" "ai_hub_kv_access" {
   principal_id         = azurerm_cognitive_account.ai_foundry.identity[0].principal_id
 }
 
+# AI Foundry Project
+resource "azapi_resource" "ai_foundry_project" {
+  type      = "Microsoft.CognitiveServices/accounts/projects@2025-06-01"
+  name      = "${var.project_name}-${var.environment}-project"
+  parent_id = azurerm_cognitive_account.ai_foundry.id
+  location  = azurerm_resource_group.this.location
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  body = {
+    properties = {
+      displayName = "AI Foundation Project"
+      description = "AI Foundry project for ${var.project_name}"
+    }
+  }
+
+  tags = local.common_tags
+}
+
 # Deploy GPT-4o-mini model (cost-effective for development)
 resource "azurerm_cognitive_deployment" "gpt4o_mini" {
   name                 = "gpt-4o-mini"
