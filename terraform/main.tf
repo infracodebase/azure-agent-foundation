@@ -18,8 +18,9 @@ resource "azurerm_resource_group" "this" {
   tags     = local.common_tags
 }
 
-# Virtual Network for secure connectivity
+# Virtual Network for secure connectivity (only when private networking is enabled)
 resource "azurerm_virtual_network" "this" {
+  count               = var.enable_private_networking ? 1 : 0
   name                = local.vnet_name
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -29,18 +30,20 @@ resource "azurerm_virtual_network" "this" {
 
 # Subnet for API Management
 resource "azurerm_subnet" "apim" {
+  count                = var.enable_private_networking ? 1 : 0
   name                 = "apim-subnet"
   resource_group_name  = azurerm_resource_group.this.name
-  virtual_network_name = azurerm_virtual_network.this.name
+  virtual_network_name = azurerm_virtual_network.this[0].name
   address_prefixes     = [local.apim_subnet_prefix]
   service_endpoints    = ["Microsoft.KeyVault"]
 }
 
 # Subnet for Function App
 resource "azurerm_subnet" "func" {
+  count                = var.enable_private_networking ? 1 : 0
   name                 = "func-subnet"
   resource_group_name  = azurerm_resource_group.this.name
-  virtual_network_name = azurerm_virtual_network.this.name
+  virtual_network_name = azurerm_virtual_network.this[0].name
   address_prefixes     = [local.func_subnet_prefix]
   service_endpoints    = ["Microsoft.KeyVault", "Microsoft.Storage"]
 
@@ -54,14 +57,16 @@ resource "azurerm_subnet" "func" {
 
 # Subnet for Container Apps
 resource "azurerm_subnet" "container_apps" {
+  count                = var.enable_private_networking ? 1 : 0
   name                 = "container-apps-subnet"
   resource_group_name  = azurerm_resource_group.this.name
-  virtual_network_name = azurerm_virtual_network.this.name
+  virtual_network_name = azurerm_virtual_network.this[0].name
   address_prefixes     = [local.container_subnet_prefix]
 }
 
 # Network Security Group for API Management subnet
 resource "azurerm_network_security_group" "apim" {
+  count               = var.enable_private_networking ? 1 : 0
   name                = "apim-nsg"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
@@ -94,6 +99,7 @@ resource "azurerm_network_security_group" "apim" {
 
 # Associate NSG with APIM subnet
 resource "azurerm_subnet_network_security_group_association" "apim" {
-  subnet_id                 = azurerm_subnet.apim.id
-  network_security_group_id = azurerm_network_security_group.apim.id
+  count                     = var.enable_private_networking ? 1 : 0
+  subnet_id                 = azurerm_subnet.apim[0].id
+  network_security_group_id = azurerm_network_security_group.apim[0].id
 }

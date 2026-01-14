@@ -6,7 +6,7 @@ resource "azurerm_container_app_environment" "this" {
   log_analytics_workspace_id = azurerm_log_analytics_workspace.this.id
 
   # VNet integration (only when private networking is enabled)
-  infrastructure_subnet_id = var.enable_private_networking ? azurerm_subnet.container_apps.id : null
+  infrastructure_subnet_id = var.enable_private_networking ? azurerm_subnet.container_apps[0].id : null
 
   tags = local.common_tags
 }

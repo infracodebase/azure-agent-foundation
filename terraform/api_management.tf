@@ -22,7 +22,7 @@ resource "azurerm_api_management" "this" {
   dynamic "virtual_network_configuration" {
     for_each = var.enable_private_networking ? [1] : []
     content {
-      subnet_id = azurerm_subnet.apim.id
+      subnet_id = azurerm_subnet.apim[0].id
     }
   }
 

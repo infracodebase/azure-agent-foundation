@@ -23,7 +23,7 @@ resource "azurerm_linux_function_app" "this" {
   public_network_access_enabled = true
 
   # Enable virtual network integration (only when private networking is enabled)
-  virtual_network_subnet_id = var.enable_private_networking ? azurerm_subnet.func.id : null
+  virtual_network_subnet_id = var.enable_private_networking ? azurerm_subnet.func[0].id : null
 
   identity {
     type = "SystemAssigned"

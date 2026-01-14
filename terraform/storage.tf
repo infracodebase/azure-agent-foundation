@@ -41,7 +41,7 @@ resource "azurerm_storage_account_network_rules" "this" {
 
   default_action             = "Deny"
   ip_rules                   = [chomp(data.http.current_ip.response_body)]
-  virtual_network_subnet_ids = [azurerm_subnet.func.id]
+  virtual_network_subnet_ids = [azurerm_subnet.func[0].id]
   bypass                     = ["AzureServices", "Metrics", "Logging"]
 }
 

@@ -71,8 +71,8 @@ output "container_app_url" {
 }
 
 output "virtual_network_name" {
-  description = "Name of the virtual network"
-  value       = azurerm_virtual_network.this.name
+  description = "Name of the virtual network (only when private networking is enabled)"
+  value       = var.enable_private_networking ? azurerm_virtual_network.this[0].name : null
 }
 
 output "api_subscription_key" {

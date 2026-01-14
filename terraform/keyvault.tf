@@ -21,7 +21,7 @@ resource "azurerm_key_vault" "this" {
       bypass                     = "AzureServices"
       default_action             = "Deny"
       ip_rules                   = [chomp(data.http.current_ip.response_body)]
-      virtual_network_subnet_ids = [azurerm_subnet.func.id, azurerm_subnet.apim.id]
+      virtual_network_subnet_ids = [azurerm_subnet.func[0].id, azurerm_subnet.apim[0].id]
     }
   }
 
