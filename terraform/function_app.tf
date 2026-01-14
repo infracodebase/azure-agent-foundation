@@ -59,11 +59,9 @@ resource "azurerm_linux_function_app" "this" {
 
   # Application settings with Key Vault references
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"              = "python"
-    "WEBSITE_RUN_FROM_PACKAGE"              = "1"
-    "AzureWebJobsFeatureFlags"              = "EnableWorkerIndexing"
-    "APPINSIGHTS_INSTRUMENTATIONKEY"        = azurerm_application_insights.this.instrumentation_key
-    "APPLICATIONINSIGHTS_CONNECTION_STRING" = azurerm_application_insights.this.connection_string
+    "FUNCTIONS_WORKER_RUNTIME"  = "python"
+    "WEBSITE_RUN_FROM_PACKAGE"  = "1"
+    "AzureWebJobsFeatureFlags"  = "EnableWorkerIndexing"
 
     # Key Vault references for sensitive data
     "STORAGE_CONNECTION_STRING" = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.this.name};SecretName=storage-connection-string)"
