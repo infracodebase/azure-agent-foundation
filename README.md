@@ -34,11 +34,11 @@ cd terraform
 # Initialize Terraform
 terraform init
 
-# Review the plan
-terraform plan
+# Review and save the plan
+terraform plan -out=tfplan
 
-# Deploy (takes ~30-45 mins for APIM)
-terraform apply
+# Apply the saved plan (takes ~30-45 mins for APIM)
+terraform apply tfplan
 ```
 
 **Note**: Azure API Management takes 30-45 minutes to provision.
