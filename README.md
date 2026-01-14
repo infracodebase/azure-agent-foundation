@@ -223,16 +223,18 @@ export MCP_ENDPOINT=$(terraform output -raw mcp_server_endpoint)
 export SUB_KEY=$(terraform output -raw api_subscription_key)
 ```
 
-**Claude Code** (easiest):
+**Claude Code** (recommended):
 
 ```bash
-claude mcp add crud-api -- npx -y mcp-remote "$MCP_ENDPOINT" --header "Ocp-Apim-Subscription-Key: $SUB_KEY"
+claude mcp add --transport http crud-api "$MCP_ENDPOINT" \
+  --header "Ocp-Apim-Subscription-Key: $SUB_KEY"
 ```
 
 **Claude Desktop** - edit config file:
 
 ```bash
-# macOS
+# macOS - create if it doesn't exist
+mkdir -p "$HOME/Library/Application Support/Claude"
 open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
 
 # Windows: %APPDATA%\Claude\claude_desktop_config.json
@@ -249,6 +251,8 @@ open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
   }
 }
 ```
+
+Note: Claude Desktop requires `mcp-remote` as a bridge. Claude Code's native HTTP transport is preferred.
 
 ### VS Code with API Center
 
