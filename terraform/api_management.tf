@@ -307,18 +307,19 @@ resource "azurerm_api_management_named_value" "function_api_key" {
   secret              = true
 
   value_from_key_vault {
-    secret_id = azurerm_key_vault_secret.function_api_key.id
+    # Use versionless_id so APIM always gets the latest secret version
+    secret_id = azurerm_key_vault_secret.function_api_key.versionless_id
   }
 
   depends_on = [azurerm_role_assignment.apim_kv_access]
 }
 
-# Subscription for API access
+# Subscription for API access (service-wide scope for internal MCP server use)
+# Omitting api_id and product_id gives service-wide scope
 resource "azurerm_api_management_subscription" "crud_api_subscription" {
   api_management_name = azurerm_api_management.this.name
   resource_group_name = azurerm_resource_group.this.name
-  display_name        = "CRUD API Subscription"
-  api_id              = azurerm_api_management_api.crud_api.id
+  display_name        = "MCP Internal Subscription"
   state               = "active"
 }
 
@@ -379,4 +380,43 @@ resource "azapi_resource" "mcp_server" {
   }
 
   depends_on = [azurerm_api_management_api.crud_api]
+}
+
+# Named value for CRUD API subscription key - used by MCP server to call CRUD API
+resource "azurerm_api_management_named_value" "crud_api_subscription_key" {
+  name                = "crud-api-subscription-key"
+  resource_group_name = azurerm_resource_group.this.name
+  api_management_name = azurerm_api_management.this.name
+  display_name        = "CRUD-API-Subscription-Key"
+  secret              = true
+  value               = azurerm_api_management_subscription.crud_api_subscription.primary_key
+}
+
+# Policy for MCP server to inject subscription key when calling CRUD API operations
+resource "azurerm_api_management_api_policy" "mcp_server_policy" {
+  api_name            = azapi_resource.mcp_server.name
+  api_management_name = azurerm_api_management.this.name
+  resource_group_name = azurerm_resource_group.this.name
+
+  xml_content = <<XML
+<policies>
+  <inbound>
+    <base />
+    <set-header name="Ocp-Apim-Subscription-Key" exists-action="override">
+      <value>{{crud-api-subscription-key}}</value>
+    </set-header>
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>
+XML
+
+  depends_on = [azurerm_api_management_named_value.crud_api_subscription_key]
 }
