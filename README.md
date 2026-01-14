@@ -215,6 +215,14 @@ Once enabled, the MCP server exposes these tools to AI agents:
 
 ### Connecting Claude Desktop
 
+Get your MCP endpoint and subscription key from Terraform:
+
+```bash
+cd terraform
+terraform output mcp_server_endpoint    # MCP endpoint URL
+terraform output api_subscription_key   # Subscription key
+```
+
 Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
@@ -222,13 +230,27 @@ Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_
   "mcpServers": {
     "crud-api": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "https://<apim-name>.azure-api.net/crud-mcp/mcp"],
+      "args": ["-y", "mcp-remote", "<mcp_server_endpoint>"],
       "env": {
-        "API_KEY": "<your-subscription-key>"
+        "API_KEY": "<api_subscription_key>"
       }
     }
   }
 }
+```
+
+### VS Code with API Center
+
+The [Azure API Center extension](https://marketplace.visualstudio.com/items?itemName=apidev.azure-api-center) discovers APIs registered in API Center and integrates with GitHub Copilot.
+
+1. Install the Azure API Center extension in VS Code
+2. Sign in to Azure and select your subscription
+3. Browse to your API Center to discover the CRUD MCP Server API
+
+```bash
+# Get your API Center URL
+cd terraform
+terraform output api_center_url
 ```
 
 ## Project Structure
