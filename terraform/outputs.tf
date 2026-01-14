@@ -83,5 +83,5 @@ output "api_subscription_key" {
 
 output "mcp_server_endpoint" {
   description = "MCP server endpoint URL for AI agents"
-  value       = "${azurerm_api_management.this.gateway_url}/crud-api-mcp/mcp"
+  value       = "${azurerm_api_management.this.gateway_url}/crud-mcp/mcp"
 }

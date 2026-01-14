@@ -219,21 +219,32 @@ Get your MCP endpoint and subscription key from Terraform:
 
 ```bash
 cd terraform
-terraform output mcp_server_endpoint    # MCP endpoint URL
-terraform output api_subscription_key   # Subscription key
+export MCP_ENDPOINT=$(terraform output -raw mcp_server_endpoint)
+export SUB_KEY=$(terraform output -raw api_subscription_key)
 ```
 
-Add to your Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+**Claude Code** (easiest):
+
+```bash
+claude mcp add crud-api -- npx -y mcp-remote "$MCP_ENDPOINT" --header "Ocp-Apim-Subscription-Key: $SUB_KEY"
+```
+
+**Claude Desktop** - edit config file:
+
+```bash
+# macOS
+open "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+
+# Windows: %APPDATA%\Claude\claude_desktop_config.json
+# Linux: ~/.config/Claude/claude_desktop_config.json
+```
 
 ```json
 {
   "mcpServers": {
     "crud-api": {
       "command": "npx",
-      "args": ["-y", "mcp-remote", "<mcp_server_endpoint>"],
-      "env": {
-        "API_KEY": "<api_subscription_key>"
-      }
+      "args": ["-y", "mcp-remote", "<MCP_ENDPOINT>", "--header", "Ocp-Apim-Subscription-Key: <SUB_KEY>"]
     }
   }
 }
