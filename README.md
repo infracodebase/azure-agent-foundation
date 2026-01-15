@@ -1,6 +1,6 @@
 # Azure AI Foundation
 
-Infrastructure and API for exposing REST APIs as MCP (Model Context Protocol) servers using Azure API Management.
+Infrastructure-as-Code for Azure AI Foundry with MCP (Model Context Protocol) server integration.
 
 ## Architecture
 
@@ -17,127 +17,76 @@ Infrastructure and API for exposing REST APIs as MCP (Model Context Protocol) se
                         └─────────────────┘
 ```
 
+**Optional**: Azure AI Foundry agents can use the MCP server. See [`agents/`](agents/) for deployment scripts.
+
+## Documentation
+
+- This README - Overview and MCP server architecture
+- **[terraform/](terraform/)** - Infrastructure deployment (Terraform)
+- **[api/README.md](api/README.md)** - Function app deployment and testing
+- **[agents/README.md](agents/README.md)** - Optional: AI agent deployment (Python SDK)
+
 ## Prerequisites
 
 - [Terraform](https://terraform.io) >= 1.12
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - [Azure Functions Core Tools](https://docs.microsoft.com/en-us/azure/azure-functions/functions-run-local) v4
-- Python 3.11
+- Python 3.11+
+- Azure subscription with appropriate permissions
 
-## Deployment
+## Deployment Overview
+
+Complete deployment requires three steps:
+
+```
+1. Deploy Infrastructure  → Terraform (30-45 mins)
+2. Deploy API            → Function App (2 mins) 
+3. Deploy Agents         → Optional (1 min)
+```
 
 ### 1. Deploy Infrastructure
 
 ```bash
 cd terraform
-
-# Initialize Terraform
 terraform init
-
-# Review and save the plan
 terraform plan -out=tfplan
-
-# Apply the saved plan (takes ~30-45 mins for APIM)
 terraform apply tfplan
 ```
 
 **Note**: Azure API Management takes 30-45 minutes to provision.
 
-### 2. Deploy Function App Code
+### 2. Deploy API (Function App)
 
-After infrastructure is deployed:
+Deploy the CRUD API backend:
 
 ```bash
 cd api/function_app
-
-# Get your function app name from Terraform output
 FUNC_APP_NAME=$(cd ../../terraform && terraform output -raw function_app_name)
-
-# Deploy the code
 func azure functionapp publish $FUNC_APP_NAME --python
 ```
 
-### 3. Set Up Environment Variables
+**See [`api/README.md`](api/README.md) for detailed instructions and testing.**
 
-Run this from the `terraform` directory to export all variables needed for testing:
+### 3. (Optional) Deploy AI Agents
 
-```bash
-cd terraform
-
-# Export all environment variables for testing
-export RG_NAME=$(terraform output -raw resource_group_name)
-export FUNC_APP_NAME=$(terraform output -raw function_app_name)
-export FUNC_KEY=$(az functionapp keys list --name $FUNC_APP_NAME --resource-group $RG_NAME --query 'functionKeys.default' -o tsv)
-export APIM_URL=$(terraform output -raw api_management_gateway_url)
-export SUB_KEY=$(terraform output -raw api_subscription_key)
-
-# Verify variables are set
-echo "Resource Group: $RG_NAME"
-echo "Function App:   $FUNC_APP_NAME"
-echo "APIM URL:       $APIM_URL"
-```
-
-**Tip**: Add these to a `.env` file or your shell profile to persist across sessions.
-
-### 4. Test Your Deployment
-
-After running the setup above, test at each layer to verify everything is working.
-
-#### Test Function App Directly
+Deploy agents using the Python SDK:
 
 ```bash
-# Health check
-curl "https://$FUNC_APP_NAME.azurewebsites.net/api/health?code=$FUNC_KEY"
-
-# List items
-curl "https://$FUNC_APP_NAME.azurewebsites.net/api/items?code=$FUNC_KEY"
-
-# Create item
-curl -X POST "https://$FUNC_APP_NAME.azurewebsites.net/api/items?code=$FUNC_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test Item","description":"Direct Function App call"}'
+cd agents
+python3 deploy-agent.py
 ```
 
-#### Test APIM REST API
+**See [`agents/README.md`](agents/README.md) for detailed instructions.**
 
-```bash
-# List items through APIM
-curl "$APIM_URL/api/items" -H "Ocp-Apim-Subscription-Key: $SUB_KEY"
+Alternatively, create agents manually in the Azure AI Foundry portal: https://ai.azure.com/
 
-# Create item through APIM
-curl -X POST "$APIM_URL/api/items" \
-  -H "Content-Type: application/json" \
-  -H "Ocp-Apim-Subscription-Key: $SUB_KEY" \
-  -d '{"name":"APIM Item","description":"Created through APIM REST"}'
-```
+## Testing
 
-#### Test MCP Server
+After deployment, test your setup:
 
-The MCP server uses JSON-RPC over HTTP with Server-Sent Events (SSE):
-
-```bash
-# Initialize MCP session
-curl -X POST "$APIM_URL/crud-mcp/mcp" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"1.0.0"}},"id":1}'
-
-# List available tools
-curl -X POST "$APIM_URL/crud-mcp/mcp" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":2}'
-
-# Call getAllItems tool
-curl -X POST "$APIM_URL/crud-mcp/mcp" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"getAllItems","arguments":{}},"id":3}'
-
-# Call createItem tool
-curl -X POST "$APIM_URL/crud-mcp/mcp" \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"tools/call","params":{"name":"createItem","arguments":{"ItemsPostRequest":{"name":"MCP Item","description":"Created via MCP"}}},"id":4}'
-```
-
-**Note**: MCP responses use SSE format with `event:` and `data:` lines. The curl commands may timeout waiting for the stream to close - this is expected.
+- **API Testing**: See [`api/README.md`](api/README.md) for Function App and APIM testing
+- **MCP Server Testing**: See MCP Server section below
+- **Agent Testing**: Deploy agents and test in Azure AI Foundry portal
 
 ## Configuration
 
@@ -238,20 +187,26 @@ terraform output api_center_url
 
 ```
 .
-├── api/
-│   └── function_app/       # Python Azure Function App
-│       ├── function_app.py # CRUD endpoints
-│       ├── host.json
-│       └── requirements.txt
-├── terraform/              # Infrastructure as Code
-│   ├── main.tf            # VNet, subnets, NSG
-│   ├── api_management.tf  # APIM + MCP server
-│   ├── api_center.tf      # API Center for discovery
-│   ├── function_app.tf    # Function App + App Insights
-│   ├── keyvault.tf        # Key Vault for secrets
-│   ├── storage.tf         # Storage account
-│   └── variables.tf       # Configuration variables
-└── README.md
+├── api/                        # Function App (CRUD API)
+│   ├── function_app/           # Python Azure Function App
+│   │   ├── function_app.py     # CRUD endpoints
+│   │   ├── host.json
+│   │   └── requirements.txt
+│   └── README.md               # API deployment guide
+├── terraform/                  # Infrastructure as Code
+│   ├── main.tf                # VNet, subnets, NSG
+│   ├── foundry.tf             # Azure AI Foundry (Hub + Project)
+│   ├── api_management.tf      # APIM + MCP server
+│   ├── api_center.tf          # API Center for discovery
+│   ├── function_app.tf        # Function App + App Insights
+│   ├── keyvault.tf            # Key Vault for secrets
+│   ├── storage.tf             # Storage account
+│   └── variables.tf           # Configuration variables
+├── agents/                     # Optional: AI agent deployment
+│   ├── deploy-agent.py        # Idempotent agent deployment script
+│   ├── requirements.txt       # Python dependencies
+│   └── README.md              # Agent deployment guide
+└── README.md                  # This file
 ```
 
 ## Schema Management
