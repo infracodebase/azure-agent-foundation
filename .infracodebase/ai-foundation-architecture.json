@@ -101,11 +101,7 @@
       "label": "Azure AI Foundry",
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "/icons/azure/ai/foundry.png",
-      "parentNode": "rg",
-      "position": {
-        "relativeTo": "storage",
-        "side": "right"
-      }
+      "parentNode": "rg"
     },
     {
       "id": "api_center",
@@ -114,8 +110,8 @@
       "icon": "/icons/azure/application/api-center.png",
       "parentNode": "rg",
       "position": {
-        "relativeTo": "kv",
-        "side": "below"
+        "relativeTo": "apim",
+        "side": "above"
       }
     },
     {
@@ -125,8 +121,8 @@
       "icon": "/icons/azure/management/application-insights.png",
       "parentNode": "rg",
       "position": {
-        "relativeTo": "api_center",
-        "side": "right"
+        "relativeTo": "function_app",
+        "side": "above"
       }
     },
     {
