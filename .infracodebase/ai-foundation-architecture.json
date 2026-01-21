@@ -142,74 +142,110 @@
       "id": "apim_to_func",
       "source": "apim",
       "target": "function_app",
-      "label": "proxies API calls"
+      "label": "HTTPS API calls",
+      "color": "blue"
     },
     {
       "id": "func_to_storage",
       "source": "function_app",
       "target": "storage",
-      "label": "stores data"
+      "label": "managed identity",
+      "color": "green"
     },
     {
       "id": "func_to_kv",
       "source": "function_app",
       "target": "kv",
-      "label": "retrieves secrets"
+      "label": "managed identity",
+      "color": "green"
     },
     {
       "id": "apim_to_kv",
       "source": "apim",
       "target": "kv",
-      "label": "retrieves API keys"
+      "label": "managed identity",
+      "color": "green"
     },
     {
       "id": "api_center_to_apim",
       "source": "api_center",
       "target": "apim",
-      "label": "discovers APIs"
+      "label": "API discovery",
+      "color": "yellow"
     },
     {
       "id": "chat_to_apim",
       "source": "chat_app",
       "target": "apim",
-      "label": "consumes MCP APIs"
+      "label": "MCP over HTTPS",
+      "color": "blue"
     },
     {
       "id": "chat_to_ai_hub",
       "source": "chat_app",
       "target": "ai_hub",
-      "label": "uses declarative agent"
+      "label": "managed identity",
+      "color": "green"
     },
     {
       "id": "ai_hub_to_storage",
       "source": "ai_hub",
       "target": "storage",
-      "label": "stores models/data"
+      "label": "managed identity",
+      "color": "green"
     },
     {
       "id": "ai_hub_to_kv",
       "source": "ai_hub",
       "target": "kv",
-      "label": "retrieves secrets"
+      "label": "managed identity",
+      "color": "green"
     },
     {
       "id": "func_to_insights",
       "source": "function_app",
       "target": "app_insights",
-      "label": "telemetry"
+      "label": "telemetry",
+      "color": "purple"
     },
     {
       "id": "chat_to_insights",
       "source": "chat_app",
       "target": "app_insights",
-      "label": "telemetry"
+      "label": "telemetry",
+      "color": "purple"
     },
     {
       "id": "insights_to_logs",
       "source": "app_insights",
       "target": "log_analytics",
-      "label": "stores logs"
+      "label": "log aggregation",
+      "color": "purple"
     }
   ],
-  "name": "Azure AI Foundation Architecture"
+  "name": "Azure AI Foundation Architecture",
+  "legend": {
+    "edges": [
+      {
+        "label": "HTTPS API Communication",
+        "color": "blue",
+        "style": "solid"
+      },
+      {
+        "label": "Managed Identity Authentication",
+        "color": "green",
+        "style": "solid"
+      },
+      {
+        "label": "Service Discovery & Governance",
+        "color": "yellow",
+        "style": "solid"
+      },
+      {
+        "label": "Monitoring & Telemetry",
+        "color": "purple",
+        "style": "solid"
+      }
+    ]
+  }
 }
