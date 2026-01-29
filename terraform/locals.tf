@@ -6,6 +6,7 @@ locals {
   resource_group_name  = "${var.project_name}-${var.environment}-rg"
   key_vault_name       = "aif-${var.environment}-kv-${local.name_suffix}" # Must be 3-24 chars
   storage_account_name = "aif${var.environment}st${local.name_suffix}" # Must be 3-24 chars, lowercase alphanumeric only
+  ai_storage_name      = "aif${var.environment}ai${local.name_suffix}" # AI Foundry dedicated storage
   function_app_name    = "${var.project_name}-${var.environment}-func-${local.name_suffix}"
   api_management_name  = "${var.project_name}-${var.environment}-apim-${local.name_suffix}"
   ai_hub_name          = "${var.project_name}-${var.environment}-aihub-${local.name_suffix}"

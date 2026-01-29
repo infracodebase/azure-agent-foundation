@@ -26,35 +26,35 @@ resource "azurerm_role_assignment" "ai_hub_kv_access" {
   principal_id         = azurerm_cognitive_account.ai_foundry.identity[0].principal_id
 }
 
-# Grant AI Hub managed identity access to storage account (for AI Search integration)
-resource "azurerm_role_assignment" "ai_hub_storage_access" {
-  scope                = azurerm_storage_account.this.id
+# Grant AI Hub managed identity access to AI Foundry storage account
+resource "azurerm_role_assignment" "ai_hub_ai_storage_access" {
+  scope                = azurerm_storage_account.ai_foundry.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_cognitive_account.ai_foundry.identity[0].principal_id
 }
 
 # Create Storage connection in AI Foundry project using AzAPI
 # This enables integration with Azure AI Search for RAG scenarios
-resource "azapi_resource" "storage_connection" {
+resource "azapi_resource" "ai_storage_connection" {
   type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview"
-  name      = "storage-connection"
+  name      = "ai-storage-connection"
   parent_id = azapi_resource.ai_foundry_project.id
 
   body = {
     properties = {
       category = "AzureBlob"
-      target   = azurerm_storage_account.this.primary_blob_endpoint
+      target   = azurerm_storage_account.ai_foundry.primary_blob_endpoint
       authType = "AAD"  # Use Azure AD authentication
       metadata = {
-        ResourceId = azurerm_storage_account.this.id
+        ResourceId = azurerm_storage_account.ai_foundry.id
       }
     }
   }
 
   depends_on = [
-    azurerm_storage_account.this,
+    azurerm_storage_account.ai_foundry,
     azapi_resource.ai_foundry_project,
-    azurerm_role_assignment.ai_hub_storage_access
+    azurerm_role_assignment.ai_hub_ai_storage_access
   ]
 }
 

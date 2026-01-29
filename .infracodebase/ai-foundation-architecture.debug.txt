@@ -1,48 +1,45 @@
 # Debug Log - ai-foundation-architecture.json
-# New request at 2026-01-29T03:32:06.015Z
+# New request at 2026-01-29T03:34:22.497Z
 ============================================================
 
-[2026-01-29T03:32:06.015Z] modify_diagram
+[2026-01-29T03:34:22.497Z] modify_diagram
 
 ## AGENT REASONING
-Adding Cosmos DB for agent state storage, restoring storage connection to AI Foundry, and fixing spacing issue with storage position
+Adding dedicated AI storage account and updating connections to show proper separation between Function App storage and AI Foundry storage
 
 ## AGENT INPUT
 {
   "nodes": [
     {
-      "id": "storage",
-      "y": 1142
+      "id": "storage"
     },
     {
-      "id": "cosmos_db",
-      "x": 1573,
-      "y": 1347
+      "id": "ai_storage",
+      "x": 1076,
+      "y": 1142
     }
   ],
   "edges": [
     {
-      "id": "ai_hub_to_storage",
+      "id": "ai_hub_to_ai_storage",
       "source": "ai_hub",
-      "target": "storage"
-    },
-    {
-      "id": "ai_hub_to_cosmos",
-      "source": "ai_hub",
-      "target": "cosmos_db"
+      "target": "ai_storage"
     }
+  ],
+  "deleteEdgeIds": [
+    "ai_hub_to_storage"
   ]
 }
 
 ## CURRENT STATE
-Nodes (16):
+Nodes (17):
   rg: rel(-375, -256) abs(-375, -256) [1650x1637]
   vnet: rel(90, 352) abs(-285, 96) [1470x690] parent=rg
   apim_subnet: rel(90, 180) abs(-195, 276) [300x330] parent=vnet
-  func_subnet: rel(493, 180) abs(208, 276) [300x330] parent=vnet
-  container_subnet: rel(900, 90) abs(615, 186) [480x510] parent=vnet
   apim: rel(90, 90) abs(-105, 366) [120x150] parent=apim_subnet
+  func_subnet: rel(493, 180) abs(208, 276) [300x330] parent=vnet
   function_app: rel(90, 90) abs(298, 366) [120x150] parent=func_subnet
+  container_subnet: rel(900, 90) abs(615, 186) [480x510] parent=vnet
   container_env: rel(90, 90) abs(705, 276) [300x330] parent=container_subnet
   chat_app: rel(90, 90) abs(795, 366) [120x150] parent=container_env
   kv: rel(270, 1347) abs(-105, 1091) [120x150] parent=rg
@@ -51,7 +48,8 @@ Nodes (16):
   api_center: rel(270, 102) abs(-105, -154) [120x150] parent=rg
   app_insights: rel(929, 90) abs(554, -166) [120x150] parent=rg
   log_analytics: rel(1234, 90) abs(859, -166) [120x150] parent=rg
-  cosmos_db: rel(1573, 1347) abs(1573, 1347) [120x150]
+  cosmos_db: rel(1440, 1347) abs(1065, 1091) [120x150] parent=rg
+  ai_storage: rel(1076, 1142) abs(1076, 1142) [120x150]
 
 Edges (13):
   apim_to_func: apim -> function_app
@@ -65,29 +63,29 @@ Edges (13):
   func_to_insights: function_app -> app_insights
   chat_to_insights: chat_app -> app_insights
   insights_to_logs: app_insights -> log_analytics
-  ai_hub_to_storage: ai_hub -> storage
   ai_hub_to_cosmos: ai_hub -> cosmos_db
+  ai_hub_to_ai_storage: ai_hub -> ai_storage
 
 ## VALIDATION SUMMARY
-Status: 0 errors, 0 warnings
+Status: 1 errors, 0 warnings
 
 ## RESPONSE SENT TO AGENT
 ```
 ## Diagram Modified: ai-foundation-architecture.json
 
 **Changes:**
+- Deleted edge 'ai_hub_to_storage'
 - Updated node 'storage'
-- Created node 'cosmos_db'
-- Created edge 'ai_hub_to_storage'
-- Created edge 'ai_hub_to_cosmos'
+- Created node 'ai_storage'
+- Created edge 'ai_hub_to_ai_storage'
 - Auto-resized containers: rg
-- **Alignment check needed**: Container resize may have shifted internal nodes. Verify alignment with external nodes: 'cosmos_db'
+- **Alignment check needed**: Container resize may have shifted internal nodes. Verify alignment with external nodes: 'ai_storage'
 
-### Current State (16 nodes, 13 edges)
+### Current State (17 nodes, 13 edges)
 
 **Root Nodes:**
 - rg: (-375, -256) [1650x1637]
-- cosmos_db: (1573, 1347)
+- ai_storage: (1076, 1142)
 
 **Child Nodes (relative → absolute):**
 In rg:
@@ -98,6 +96,7 @@ In rg:
   - app_insights: (929, 90) → abs (554, -166)
   - ai_hub: (1170, 1347) → abs (795, 1091)
   - log_analytics: (1234, 90) → abs (859, -166)
+  - cosmos_db: (1440, 1347) → abs (1065, 1091)
 In vnet:
   - apim_subnet: (90, 180) → abs (-195, 276) [300x330]
   - func_subnet: (493, 180) → abs (208, 276) [300x330]
@@ -123,8 +122,126 @@ In container_env:
 - func_to_insights: function_app → app_insights "telemetry"
 - chat_to_insights: chat_app → app_insights "telemetry"
 - insights_to_logs: app_insights → log_analytics "stores logs"
-- ai_hub_to_storage: ai_hub → storage "stores models/data"
 - ai_hub_to_cosmos: ai_hub → cosmos_db "agent state storage"
+- ai_hub_to_ai_storage: ai_hub → ai_storage "AI models & data"
+
+### Errors
+- 'rg' overlaps 'ai_storage'. Move 'ai_storage' to x=1375 (right of 'rg')
+
+---
+**1 error** — fix errors first
+
+**Look at the diagram image above.** Each error message tells you exactly where to move the node. Follow those suggestions to fix all errors in one call.
+
+
+✓ Saved to 'ai-foundation-architecture.json' (1 issue to fix)
+```
+
+============================================================
+[2026-01-29T03:34:28.499Z] modify_diagram
+
+## AGENT REASONING
+Moving AI storage outside the resource group boundary to fix overlap
+
+## AGENT INPUT
+{
+  "nodes": [
+    {
+      "id": "ai_storage",
+      "x": 1375,
+      "y": 1142
+    }
+  ]
+}
+
+## CURRENT STATE
+Nodes (17):
+  rg: rel(-375, -256) abs(-375, -256) [1650x1637]
+  vnet: rel(90, 352) abs(-285, 96) [1470x690] parent=rg
+  apim_subnet: rel(90, 180) abs(-195, 276) [300x330] parent=vnet
+  apim: rel(90, 90) abs(-105, 366) [120x150] parent=apim_subnet
+  func_subnet: rel(493, 180) abs(208, 276) [300x330] parent=vnet
+  function_app: rel(90, 90) abs(298, 366) [120x150] parent=func_subnet
+  container_subnet: rel(900, 90) abs(615, 186) [480x510] parent=vnet
+  container_env: rel(90, 90) abs(705, 276) [300x330] parent=container_subnet
+  chat_app: rel(90, 90) abs(795, 366) [120x150] parent=container_env
+  kv: rel(270, 1347) abs(-105, 1091) [120x150] parent=rg
+  storage: rel(673, 1142) abs(298, 886) [120x150] parent=rg
+  ai_hub: rel(1170, 1347) abs(795, 1091) [120x150] parent=rg
+  api_center: rel(270, 102) abs(-105, -154) [120x150] parent=rg
+  app_insights: rel(929, 90) abs(554, -166) [120x150] parent=rg
+  log_analytics: rel(1234, 90) abs(859, -166) [120x150] parent=rg
+  cosmos_db: rel(1440, 1347) abs(1065, 1091) [120x150] parent=rg
+  ai_storage: rel(1375, 1142) abs(1375, 1142) [120x150]
+
+Edges (13):
+  apim_to_func: apim -> function_app
+  func_to_storage: function_app -> storage
+  func_to_kv: function_app -> kv
+  apim_to_kv: apim -> kv
+  api_center_to_apim: api_center -> apim
+  chat_to_apim: chat_app -> apim
+  chat_to_ai_hub: chat_app -> ai_hub
+  ai_hub_to_kv: ai_hub -> kv
+  func_to_insights: function_app -> app_insights
+  chat_to_insights: chat_app -> app_insights
+  insights_to_logs: app_insights -> log_analytics
+  ai_hub_to_cosmos: ai_hub -> cosmos_db
+  ai_hub_to_ai_storage: ai_hub -> ai_storage
+
+## VALIDATION SUMMARY
+Status: 0 errors, 0 warnings
+
+## RESPONSE SENT TO AGENT
+```
+## Diagram Modified: ai-foundation-architecture.json
+
+**Changes:**
+- Updated node 'ai_storage'
+
+### Current State (17 nodes, 13 edges)
+
+**Root Nodes:**
+- rg: (-375, -256) [1650x1637]
+- ai_storage: (1375, 1142)
+
+**Child Nodes (relative → absolute):**
+In rg:
+  - vnet: (90, 352) → abs (-285, 96) [1470x690]
+  - api_center: (270, 102) → abs (-105, -154)
+  - kv: (270, 1347) → abs (-105, 1091)
+  - storage: (673, 1142) → abs (298, 886)
+  - app_insights: (929, 90) → abs (554, -166)
+  - ai_hub: (1170, 1347) → abs (795, 1091)
+  - log_analytics: (1234, 90) → abs (859, -166)
+  - cosmos_db: (1440, 1347) → abs (1065, 1091)
+In vnet:
+  - apim_subnet: (90, 180) → abs (-195, 276) [300x330]
+  - func_subnet: (493, 180) → abs (208, 276) [300x330]
+  - container_subnet: (900, 90) → abs (615, 186) [480x510]
+In apim_subnet:
+  - apim: (90, 90) → abs (-105, 366)
+In func_subnet:
+  - function_app: (90, 90) → abs (298, 366)
+In container_subnet:
+  - container_env: (90, 90) → abs (705, 276) [300x330]
+In container_env:
+  - chat_app: (90, 90) → abs (795, 366)
+
+**Edges:**
+- apim_to_func: apim → function_app "proxies API calls"
+- func_to_storage: function_app → storage "stores data"
+- func_to_kv: function_app → kv "retrieves secrets"
+- apim_to_kv: apim → kv "retrieves API keys"
+- api_center_to_apim: api_center → apim "discovers APIs"
+- chat_to_apim: chat_app → apim "consumes MCP APIs"
+- chat_to_ai_hub: chat_app → ai_hub "uses declarative agent"
+- ai_hub_to_kv: ai_hub → kv "retrieves secrets"
+- func_to_insights: function_app → app_insights "telemetry"
+- chat_to_insights: chat_app → app_insights "telemetry"
+- insights_to_logs: app_insights → log_analytics "stores logs"
+- ai_hub_to_cosmos: ai_hub → cosmos_db "agent state storage"
+- ai_hub_to_ai_storage: ai_hub → ai_storage "AI models & data"
 
 ---
 **Layout valid** — no errors

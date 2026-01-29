@@ -10,7 +10,7 @@
       "x": -375,
       "y": -256,
       "width": 1650,
-      "height": 1587
+      "height": 1637
     },
     {
       "id": "vnet",
@@ -111,10 +111,10 @@
     {
       "id": "storage",
       "label": "Storage Account",
+      "subtitle": "Function App data",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
       "x": 673,
       "y": 1142,
-      "subtitle": "aifoundationdevsa",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
       "parentId": "rg"
     },
     {
@@ -156,11 +156,19 @@
     {
       "id": "cosmos_db",
       "label": "Cosmos DB",
-      "x": 1440,
-      "y": 1347,
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
+      "x": 1440,
+      "y": 1347,
       "parentId": "rg"
+    },
+    {
+      "id": "ai_storage",
+      "label": "AI Storage",
+      "x": 1375,
+      "y": 1142,
+      "subtitle": "Models & training data",
+      "icon": "/icons/azure/storage/storage-accounts.png"
     }
   ],
   "edges": [
@@ -231,18 +239,18 @@
       "label": "stores logs"
     },
     {
-      "id": "ai_hub_to_storage",
-      "source": "ai_hub",
-      "target": "storage",
-      "label": "stores models/data",
-      "color": "green"
-    },
-    {
       "id": "ai_hub_to_cosmos",
       "source": "ai_hub",
       "target": "cosmos_db",
       "label": "agent state storage",
       "color": "purple"
+    },
+    {
+      "id": "ai_hub_to_ai_storage",
+      "source": "ai_hub",
+      "target": "ai_storage",
+      "label": "AI models & data",
+      "color": "green"
     }
   ]
 }
