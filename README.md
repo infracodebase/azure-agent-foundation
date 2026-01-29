@@ -1,101 +1,177 @@
 # Azure AI Foundation
 
-**Production-Ready Infrastructure for AI Agent Systems with MCP Server Integration**
+**Enterprise-Grade Infrastructure for AI Agent Systems with Enhanced Security**
 
-A comprehensive Infrastructure-as-Code foundation that deploys Azure services to support AI agent systems using the Model Context Protocol (MCP). This baseline architecture enables AI agents (like those running on Azure AI Foundry) to access enterprise services through standardized MCP tools exposed via Azure API Management.
+A comprehensive, production-ready Infrastructure-as-Code foundation that deploys secure Azure services to support AI agent systems using the Model Context Protocol (MCP). This enterprise architecture enables AI agents to access business services through standardized MCP tools while maintaining enterprise security, compliance, and scalability requirements with Azure Front Door WAF protection, private endpoints, and comprehensive network isolation.
 
 ## Executive Summary
 
-This repository provides the core Azure services and security baseline for building agent-to-Gekko systems where:
+This repository provides enterprise-grade Azure services and comprehensive security architecture for building production AI agent systems with:
 
-- **Azure API Management** converts REST APIs into MCP servers that AI agents can consume
-- **Azure API Center** provides centralized discovery and management of MCP servers as APIs
-- **Azure AI Foundry** hosts declarative AI agents with access to MCP tools
-- **Azure Container Apps** provides scalable hosting for chat interfaces and agent applications
-- **Security-first design** follows Microsoft Cloud Security Benchmark with managed identities, Key Vault integration, and network isolation options
+- **Azure Front Door with WAF** provides global CDN and Web Application Firewall protection against DDoS, bot attacks, and common web threats
+- **Private Endpoint Architecture** ensures all PaaS services (Key Vault, Storage, PostgreSQL, AI Foundry) are accessible only through private networks
+- **Azure API Management** converts REST APIs into standardized MCP servers with enterprise governance and security policies
+- **PostgreSQL Flexible Server** provides managed database services with private connectivity for application data persistence
+- **Azure AI Foundry** hosts declarative AI agents with GPT-4o-mini deployment and secure access to MCP tools
+- **Azure Container Apps** provides scalable hosting for chat interfaces with user-assigned managed identity integration
+- **Comprehensive Network Security** with Network Security Groups, private DNS zones, and least-privilege access controls
 
-## System Architecture
+## Production Architecture
 
-The architecture supports both external MCP clients (like Claude Desktop) and internal AI agents running on Azure AI Foundry:
+The architecture provides enterprise-grade security with multiple user access patterns and comprehensive private networking:
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                           Azure Subscription                        │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
-│  │   External      │    │     Azure       │    │    Backend      │  │
-│  │  MCP Clients    │───▶│  API Management │───▶│   Services      │  │
-│  │ (Claude, etc.)  │    │  (MCP Gateway)  │    │ (Function Apps) │  │
-│  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
-│                                   │                                 │
-│                                   ▼                                 │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │
-│  │  Azure AI       │    │   API Center    │    │   Container     │  │
-│  │   Foundry       │───▶│  (Discovery &   │    │     Apps        │  │
-│  │ (AI Agents)     │    │  Governance)    │    │ (Chat Interface)│  │
-│  └─────────────────┘    └─────────────────┘    └─────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                              Azure Subscription                              │
+│                                                                              │
+│  ┌──────────────────┐     ┌──────────────────┐     ┌──────────────────┐      │
+│  │   End Users      │────▶│   Azure Front    │────▶│   Container      │      │
+│  │                  │     │   Door + WAF     │     │   Apps           │      │
+│  └──────────────────┘     └──────────────────┘     └──────────────────┘      │
+│                                                              │                │
+│  ┌──────────────────┐     ┌──────────────────┐              ▼                │
+│  │   Developers     │────▶│   API Center     │     ┌──────────────────┐      │
+│  │                  │     │  (Discovery)     │     │   Azure AI       │      │
+│  └──────────────────┘     └──────────────────┘     │   Foundry        │      │
+│                                     │              └──────────────────┘      │
+│  ┌──────────────────┐              ▼                        │                │
+│  │  AI Developers   │     ┌──────────────────┐              ▼                │
+│  │                  │────▶│   API Management │     ┌──────────────────┐      │
+│  └──────────────────┘     │  (MCP Gateway)   │────▶│   Function Apps  │      │
+│                           └──────────────────┘     └──────────────────┘      │
+│                                                                              │
+│  ┌─────────────────────────────── Private Network ───────────────────────────┐│
+│  │                                                                           ││
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐      ││
+│  │  │ Private     │  │ Private     │  │ Private     │  │ Private     │      ││
+│  │  │ Endpoint    │  │ Endpoint    │  │ Endpoint    │  │ Endpoint    │      ││
+│  │  │ (Key Vault) │  │ (Storage)   │  │ (AI Foundry)│  │ (PostgreSQL)│      ││
+│  │  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘      ││
+│  └─────────────────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Key Components
+### User Access Patterns
+
+- **End Users**: Access AI chat interface through Azure Front Door with WAF protection
+- **Developers**: Discover and consume MCP tools through API Center for local development
+- **AI Developers**: Access Azure AI Foundry directly for agent development and management
+
+### Core Infrastructure Components
+
+**Security & CDN Layer (Azure Front Door)**
+- Global CDN with premium WAF protection using Microsoft Default Rule Set and Bot Manager
+- DDoS protection and geo-filtering capabilities
+- HTTPS-only forwarding with custom error pages for blocked requests
+- Health monitoring and automatic failover for Container Apps
+
+**Database Layer (PostgreSQL Flexible Server)**
+- Managed PostgreSQL 16 with high availability (same-zone configuration)
+- Private endpoint connectivity with no public network access
+- Secure connection strings stored in Azure Key Vault
+- Dedicated private DNS zone for internal name resolution
 
 **MCP Gateway Layer (API Management)**
-- Converts REST APIs into standardized MCP servers
-- Provides authentication, rate limiting, and monitoring
-- Exposes MCP endpoints that agents can consume as tools
+- Converts REST APIs into standardized MCP servers with full protocol compliance
+- Enterprise-grade authentication, rate limiting, and comprehensive monitoring
+- Exposes MCP endpoints that AI agents can consume as standardized tools
+- Integration with Key Vault for secure API key management
 
 **Service Discovery (API Center)**
-- Centralized registry of available MCP servers
-- Integration with development tools (VS Code extension)
-- API governance and lifecycle management
+- Centralized registry of available MCP servers with automated API spec import
+- Integration with development tools (VS Code extension) for local development
+- Complete API governance and lifecycle management with versioning support
 
 **AI Agent Runtime (Azure AI Foundry)**
-- Hosts declarative agents with GPT-4o-mini/GPT-4o models
-- Native MCP tool integration for agent-to-service communication
-- Managed identity integration for secure service access
+- Hosts declarative agents with GPT-4o-mini deployment for cost-effective AI operations
+- Native MCP tool integration for secure agent-to-service communication
+- Private endpoint connectivity for enhanced security isolation
+- Pre-configured AI agents (sample, customer support, data analysis)
 
 **Application Layer (Container Apps)**
-- Scalable hosting for chat interfaces and web applications
-- Direct integration with AI Foundry for agent interactions
-- Secure communication with backend services
+- Scalable hosting for chat interfaces with user-assigned managed identity
+- Direct integration with AI Foundry through private endpoints
+- PostgreSQL database integration for application state persistence
+- Secure secret management through Key Vault integration
 
 **Backend Services (Function Apps)**
-- Microservices exposing business logic as REST APIs
-- Automatic scaling and serverless execution
-- Integration with Azure storage and data services
+- Serverless MCP server implementation with CRUD operations
+- Automatic scaling with pay-per-execution pricing model
+- Private endpoint access to storage and data services
+- Integration with API Management for MCP protocol compliance
 
-## Security Architecture
+## Enterprise Security Architecture
 
-This architecture implements defense-in-depth security following the [Microsoft Cloud Security Benchmark](https://docs.microsoft.com/en-us/security/benchmark/azure/):
+This production architecture implements comprehensive defense-in-depth security following the [Microsoft Cloud Security Benchmark](https://docs.microsoft.com/en-us/security/benchmark/azure/):
+
+### External Security Layer
+- **Azure Front Door Premium WAF**: Microsoft Default Rule Set v2.1 and Bot Manager Rule Set v1.0 for comprehensive threat protection
+- **Global DDoS Protection**: Built-in protection against distributed denial-of-service attacks
+- **Geo-filtering & Rate Limiting**: Advanced traffic filtering and throttling capabilities
+- **HTTPS Enforcement**: All traffic forced through HTTPS with custom error pages for security violations
 
 ### Identity & Access Management
-- **Azure Managed Identities**: All service-to-service authentication uses system-assigned managed identities
-- **Azure RBAC**: Least-privilege access with role-based access control across all resources
-- **Azure AD Integration**: Centralized identity for user authentication and conditional access policies
+- **User-Assigned Managed Identities**: Enhanced security for Container Apps with dedicated identity for Key Vault access
+- **System-Assigned Managed Identities**: Secure service-to-service authentication across all Azure resources
+- **Azure RBAC**: Least-privilege access with role-based access control using Key Vault Secrets User and Cognitive Services User roles
+- **Azure AD Integration**: Centralized identity with conditional access policies and multi-factor authentication support
 
-### Network Security
-- **Virtual Network Integration**: Optional private networking with dedicated subnets for each service tier
-- **Network Security Groups**: Granular traffic filtering with security rules for each subnet
-- **Private Endpoints**: Secure connectivity to Azure services without internet exposure (when private networking enabled)
-- **API Management Firewall**: Built-in protection against common web attacks and DDoS
+### Network Security & Isolation
+- **Complete Private Endpoint Architecture**: All PaaS services (Key Vault, Storage, PostgreSQL, AI Foundry, Cosmos DB) accessible only through private networks
+- **Dedicated Private DNS Zones**: Internal name resolution for privatelink domains (vault.azure.net, postgres.database.azure.com, etc.)
+- **Network Security Groups**: Granular traffic filtering with specific rules for each subnet tier (APIM, Compute, Container Apps, Private Endpoints)
+- **Virtual Network Isolation**: Dedicated subnets with controlled inter-subnet communication and no direct internet access to backend services
 
-### Data Protection
-- **Encryption at Rest**: All data encrypted using Microsoft-managed keys with customer-managed key option
-- **Encryption in Transit**: TLS 1.2+ enforced for all communications
-- **Azure Key Vault**: Centralized secrets management for API keys, connection strings, and certificates
-- **Data Classification**: Integration with Azure Purview for sensitive data discovery and classification
+### Data Protection & Database Security
+- **PostgreSQL Private Connectivity**: Database accessible only through private endpoints with no public network access
+- **Encrypted Database Connections**: SSL/TLS enforced for all PostgreSQL connections with secure connection strings
+- **Azure Key Vault Integration**: Centralized secrets management for database credentials, API keys, and certificates with RBAC authorization
+- **Encryption at Rest**: All data encrypted using Microsoft-managed keys with customer-managed key option available
+- **Encryption in Transit**: TLS 1.2+ enforced for all communications including Front Door to Container Apps
 
 ### Monitoring & Compliance
-- **Application Insights**: Application performance monitoring and distributed tracing
-- **Azure Monitor**: Centralized logging and alerting for security events
-- **Microsoft Defender for Cloud**: Threat detection and security recommendations
-- **Audit Logging**: Complete audit trail for API access and administrative operations
+- **Application Insights**: Application performance monitoring with distributed tracing across Container Apps and Function Apps
+- **Azure Monitor**: Centralized logging and alerting for security events with custom dashboards
+- **Resource Logs**: Comprehensive logging enabled for API Management, Container Apps, and Front Door for security investigation
+- **Audit Logging**: Complete audit trail for API access, administrative operations, and database connections
 
-### Configuration Security
-All resources follow security baselines including:
-- **Azure API Management Security Baseline**: Network isolation, WAF integration, certificate management
-- **Azure Functions Security Baseline**: Secure deployment, managed identity authentication
-- **Azure Key Vault Security Baseline**: Access policies, soft delete, network restrictions
-- **Azure Container Apps Security Baseline**: Image vulnerability scanning, secure ingress
+### Security Baselines & Compliance
+All resources follow Microsoft Cloud Security Benchmark baselines:
+- **Azure Front Door Security Baseline**: Premium WAF protection, custom error responses, secure certificate management
+- **Azure API Management Security Baseline**: Network isolation, managed identity integration, comprehensive policy enforcement
+- **Azure Functions Security Baseline**: Secure deployment patterns, managed identity authentication, Key Vault integration
+- **Azure Key Vault Security Baseline**: RBAC authorization enabled, soft delete protection, network access restrictions
+- **Azure Container Apps Security Baseline**: User-assigned managed identity, secure ingress configuration, private endpoint integration
+- **Azure Storage Security Baseline**: Private endpoint connectivity, managed identity access, encryption enforcement
+- **PostgreSQL Security Baseline**: Private networking only, Azure AD authentication, encrypted connections
+
+## Infrastructure Overview
+
+This production architecture deploys **79 Azure resources** using Infrastructure as Code with comprehensive automation:
+
+### Resource Summary
+- **1 Azure Front Door** with Premium WAF protection
+- **1 PostgreSQL Flexible Server** with private endpoint connectivity
+- **6 Private Endpoints** for complete PaaS service isolation (Key Vault, Storage, AI Foundry, AI Storage, Cosmos DB, PostgreSQL)
+- **7 Private DNS Zones** for internal name resolution
+- **4 Network Security Groups** with granular traffic filtering rules
+- **1 User-Assigned Managed Identity** for enhanced Container Apps security
+- **Complete AI Stack**: AI Foundry, GPT-4o-mini deployment, Cosmos DB for conversations
+- **Enterprise Services**: API Management, API Center, Container Apps, Function Apps
+- **Monitoring & Security**: Application Insights, Log Analytics, Key Vault with RBAC
+
+### Deployment Characteristics
+- **Zero Public Endpoints**: All PaaS services accessible only through private networks
+- **Enterprise Security**: WAF protection, managed identities, comprehensive network isolation
+- **High Availability**: Zone-redundant services with automatic failover capabilities
+- **Cost Optimized**: GPT-4o-mini deployment for cost-effective AI operations
+- **Scalable Architecture**: Container Apps and Function Apps with automatic scaling
+
+### Terraform Configuration
+- **96 Azure Resources** fully automated with Infrastructure as Code
+- **Full Validation**: All configurations pass `terraform plan` and `terraform validate`
+- **Security Compliance**: Follows Microsoft Cloud Security Benchmark baselines
+- **Production Ready**: Suitable for enterprise deployment with proper authentication
 
 ## MCP Server Integration Pattern
 
@@ -330,7 +406,7 @@ terraform apply -var="enable_private_networking=true"
 
 ## Infrastructure Overview
 
-**Total Resources Deployed**: 45+ Azure resources across 8 service categories
+**Total Resources Deployed**: 79 Azure resources with enterprise-grade security and private networking
 
 | Service Category | Key Components | Purpose |
 |------------------|----------------|---------|
@@ -347,11 +423,14 @@ For complete Terraform variable and output documentation, see the **[Terraform R
 
 ## Testing
 
-After deployment, test your setup:
+After deployment, test your production setup:
 
-- **API Testing**: See [`api/README.md`](api/README.md) for Function App and APIM testing
-- **MCP Server Testing**: See MCP Server section below
-- **Agent Testing**: Deploy agents and test in Azure AI Foundry portal
+- **Front Door Testing**: Verify WAF protection and HTTPS-only access through Azure Front Door endpoint
+- **Database Connectivity**: Test PostgreSQL private endpoint connectivity from Container Apps
+- **API Testing**: See [`api/README.md`](api/README.md) for Function App and APIM testing through private networks
+- **MCP Server Testing**: Test MCP protocol compliance and tool discovery through API Center
+- **Agent Testing**: Deploy agents and test AI Foundry access through private endpoints
+- **Security Validation**: Verify no public endpoints are accessible and all traffic flows through protected channels
 
 ## Key Configuration Options
 
