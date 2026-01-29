@@ -1,11 +1,11 @@
 # Debug Log - ai-foundation-architecture.json
-# New request at 2026-01-29T03:34:22.497Z
+# New request at 2026-01-29T03:35:28.789Z
 ============================================================
 
-[2026-01-29T03:34:22.497Z] modify_diagram
+[2026-01-29T03:35:28.789Z] modify_diagram
 
 ## AGENT REASONING
-Adding dedicated AI storage account and updating connections to show proper separation between Function App storage and AI Foundry storage
+Updating storage account icons and removing colors from AI Foundry connections
 
 ## AGENT INPUT
 {
@@ -14,12 +14,15 @@ Adding dedicated AI storage account and updating connections to show proper sepa
       "id": "storage"
     },
     {
-      "id": "ai_storage",
-      "x": 1076,
-      "y": 1142
+      "id": "ai_storage"
     }
   ],
   "edges": [
+    {
+      "id": "ai_hub_to_cosmos",
+      "source": "ai_hub",
+      "target": "cosmos_db"
+    },
     {
       "id": "ai_hub_to_ai_storage",
       "source": "ai_hub",
@@ -27,13 +30,14 @@ Adding dedicated AI storage account and updating connections to show proper sepa
     }
   ],
   "deleteEdgeIds": [
-    "ai_hub_to_storage"
+    "ai_hub_to_cosmos",
+    "ai_hub_to_ai_storage"
   ]
 }
 
 ## CURRENT STATE
 Nodes (17):
-  rg: rel(-375, -256) abs(-375, -256) [1650x1637]
+  rg: rel(-375, -256) abs(-375, -256) [1650x1909]
   vnet: rel(90, 352) abs(-285, 96) [1470x690] parent=rg
   apim_subnet: rel(90, 180) abs(-195, 276) [300x330] parent=vnet
   apim: rel(90, 90) abs(-105, 366) [120x150] parent=apim_subnet
@@ -49,7 +53,7 @@ Nodes (17):
   app_insights: rel(929, 90) abs(554, -166) [120x150] parent=rg
   log_analytics: rel(1234, 90) abs(859, -166) [120x150] parent=rg
   cosmos_db: rel(1440, 1347) abs(1065, 1091) [120x150] parent=rg
-  ai_storage: rel(1076, 1142) abs(1076, 1142) [120x150]
+  ai_storage: rel(1170, 1619) abs(795, 1363) [120x150] parent=rg
 
 Edges (13):
   apim_to_func: apim -> function_app
@@ -67,25 +71,25 @@ Edges (13):
   ai_hub_to_ai_storage: ai_hub -> ai_storage
 
 ## VALIDATION SUMMARY
-Status: 1 errors, 0 warnings
+Status: 0 errors, 0 warnings
 
 ## RESPONSE SENT TO AGENT
 ```
 ## Diagram Modified: ai-foundation-architecture.json
 
 **Changes:**
-- Deleted edge 'ai_hub_to_storage'
+- Deleted edge 'ai_hub_to_cosmos'
+- Deleted edge 'ai_hub_to_ai_storage'
 - Updated node 'storage'
-- Created node 'ai_storage'
+- Updated node 'ai_storage'
+- Created edge 'ai_hub_to_cosmos'
 - Created edge 'ai_hub_to_ai_storage'
 - Auto-resized containers: rg
-- **Alignment check needed**: Container resize may have shifted internal nodes. Verify alignment with external nodes: 'ai_storage'
 
 ### Current State (17 nodes, 13 edges)
 
 **Root Nodes:**
-- rg: (-375, -256) [1650x1637]
-- ai_storage: (1076, 1142)
+- rg: (-375, -256) [1650x1909]
 
 **Child Nodes (relative → absolute):**
 In rg:
@@ -95,6 +99,7 @@ In rg:
   - storage: (673, 1142) → abs (298, 886)
   - app_insights: (929, 90) → abs (554, -166)
   - ai_hub: (1170, 1347) → abs (795, 1091)
+  - ai_storage: (1170, 1619) → abs (795, 1363)
   - log_analytics: (1234, 90) → abs (859, -166)
   - cosmos_db: (1440, 1347) → abs (1065, 1091)
 In vnet:
@@ -125,38 +130,37 @@ In container_env:
 - ai_hub_to_cosmos: ai_hub → cosmos_db "agent state storage"
 - ai_hub_to_ai_storage: ai_hub → ai_storage "AI models & data"
 
-### Errors
-- 'rg' overlaps 'ai_storage'. Move 'ai_storage' to x=1375 (right of 'rg')
-
 ---
-**1 error** — fix errors first
-
-**Look at the diagram image above.** Each error message tells you exactly where to move the node. Follow those suggestions to fix all errors in one call.
+**Layout valid** — no errors
 
 
-✓ Saved to 'ai-foundation-architecture.json' (1 issue to fix)
+✓ Saved to 'ai-foundation-architecture.json' - layout complete!
 ```
 
 ============================================================
-[2026-01-29T03:34:28.499Z] modify_diagram
+[2026-01-29T03:36:00.862Z] modify_diagram
 
 ## AGENT REASONING
-Moving AI storage outside the resource group boundary to fix overlap
+Adding NSG decorators to all subnets to show they are protected by Network Security Groups as implemented in the Terraform code
 
 ## AGENT INPUT
 {
   "nodes": [
     {
-      "id": "ai_storage",
-      "x": 1375,
-      "y": 1142
+      "id": "apim_subnet"
+    },
+    {
+      "id": "func_subnet"
+    },
+    {
+      "id": "container_subnet"
     }
   ]
 }
 
 ## CURRENT STATE
 Nodes (17):
-  rg: rel(-375, -256) abs(-375, -256) [1650x1637]
+  rg: rel(-375, -256) abs(-375, -256) [1650x1909]
   vnet: rel(90, 352) abs(-285, 96) [1470x690] parent=rg
   apim_subnet: rel(90, 180) abs(-195, 276) [300x330] parent=vnet
   apim: rel(90, 90) abs(-105, 366) [120x150] parent=apim_subnet
@@ -172,7 +176,7 @@ Nodes (17):
   app_insights: rel(929, 90) abs(554, -166) [120x150] parent=rg
   log_analytics: rel(1234, 90) abs(859, -166) [120x150] parent=rg
   cosmos_db: rel(1440, 1347) abs(1065, 1091) [120x150] parent=rg
-  ai_storage: rel(1375, 1142) abs(1375, 1142) [120x150]
+  ai_storage: rel(1170, 1619) abs(795, 1363) [120x150] parent=rg
 
 Edges (13):
   apim_to_func: apim -> function_app
@@ -197,13 +201,14 @@ Status: 0 errors, 0 warnings
 ## Diagram Modified: ai-foundation-architecture.json
 
 **Changes:**
-- Updated node 'ai_storage'
+- Updated node 'apim_subnet'
+- Updated node 'func_subnet'
+- Updated node 'container_subnet'
 
 ### Current State (17 nodes, 13 edges)
 
 **Root Nodes:**
-- rg: (-375, -256) [1650x1637]
-- ai_storage: (1375, 1142)
+- rg: (-375, -256) [1650x1909]
 
 **Child Nodes (relative → absolute):**
 In rg:
@@ -213,6 +218,7 @@ In rg:
   - storage: (673, 1142) → abs (298, 886)
   - app_insights: (929, 90) → abs (554, -166)
   - ai_hub: (1170, 1347) → abs (795, 1091)
+  - ai_storage: (1170, 1619) → abs (795, 1363)
   - log_analytics: (1234, 90) → abs (859, -166)
   - cosmos_db: (1440, 1347) → abs (1065, 1091)
 In vnet:
