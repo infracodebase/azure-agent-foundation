@@ -2,7 +2,7 @@
 resource "azurerm_cdn_frontdoor_profile" "this" {
   name                = local.front_door_name
   resource_group_name = azurerm_resource_group.this.name
-  sku_name            = "Standard_AzureFrontDoor" # Standard tier includes WAF
+  sku_name            = "Premium_AzureFrontDoor" # Premium tier required for managed rules
 
   tags = local.common_tags
 }

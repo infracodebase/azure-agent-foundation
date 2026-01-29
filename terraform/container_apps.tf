@@ -1,3 +1,12 @@
+# User-assigned managed identity for Container App to access Key Vault
+resource "azurerm_user_assigned_identity" "container_app" {
+  name                = "${local.container_app_name}-identity"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+
+  tags = local.common_tags
+}
+
 # Container Apps Environment
 resource "azurerm_container_app_environment" "this" {
   name                       = local.container_env_name
@@ -19,7 +28,8 @@ resource "azurerm_container_app" "chat_interface" {
   revision_mode                = "Single"
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.container_app.id]
   }
 
   template {
@@ -104,6 +114,7 @@ resource "azurerm_container_app" "chat_interface" {
   secret {
     name                = "postgres-connection-string"
     key_vault_secret_id = azurerm_key_vault_secret.postgres_connection_string.id
+    identity            = azurerm_user_assigned_identity.container_app.client_id
   }
 
   # Ingress configuration for external access through Azure Front Door
@@ -128,14 +139,14 @@ resource "azurerm_container_app" "chat_interface" {
 resource "azurerm_role_assignment" "container_app_kv_access" {
   scope                = azurerm_key_vault.this.id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_container_app.chat_interface.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.container_app.principal_id
 }
 
 # Grant Container App managed identity access to AI Foundry
 resource "azurerm_role_assignment" "container_app_ai_access" {
   scope                = azurerm_cognitive_account.ai_foundry.id
   role_definition_name = "Cognitive Services User"
-  principal_id         = azurerm_container_app.chat_interface.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.container_app.principal_id
 }
 
 # Container App uses AI Hub directly for AI services - no additional role assignments needed
@@ -154,7 +165,7 @@ resource "azurerm_container_app_environment_dapr_component" "keyvault_secret_sto
 
   metadata {
     name  = "azureClientId"
-    value = azurerm_container_app.chat_interface.identity[0].principal_id
+    value = azurerm_user_assigned_identity.container_app.client_id
   }
 
   scopes = [azurerm_container_app.chat_interface.name]
