@@ -305,34 +305,26 @@
       "parentId": "rg"
     },
     {
-      "id": "internet",
-      "label": "Internet",
-      "subtitle": "External Access",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/internet-alt1.png",
-      "x": 2911,
-      "y": 350
-    },
-    {
       "id": "end_users",
       "label": "End Users",
       "subtitle": "Chat Interface",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/users.png",
-      "x": 2400,
-      "y": 50
+      "x": 2378,
+      "y": 805
     },
     {
       "id": "developers",
       "label": "Developers",
       "subtitle": "MCP Tools",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/devtools/developer-tools.png",
-      "x": 2400,
-      "y": 350
+      "x": 541,
+      "y": -166
     },
     {
       "id": "ai_developers",
       "label": "AI Developers",
-      "x": 2225,
-      "y": 2212,
+      "x": 981,
+      "y": 2235,
       "subtitle": "Agent Building",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/devtools/developer-tools.png"
     }
@@ -482,24 +474,6 @@
       "source": "ai_developers",
       "target": "ai_hub",
       "label": "builds agents"
-    },
-    {
-      "id": "internet_to_users",
-      "source": "internet",
-      "target": "end_users",
-      "label": "external access"
-    },
-    {
-      "id": "internet_to_devs",
-      "source": "internet",
-      "target": "developers",
-      "label": "external access"
-    },
-    {
-      "id": "internet_to_ai_devs",
-      "source": "internet",
-      "target": "ai_developers",
-      "label": "external access"
     }
   ]
 }
