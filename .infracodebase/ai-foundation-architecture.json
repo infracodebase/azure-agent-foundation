@@ -10,7 +10,7 @@
       "x": -375,
       "y": -256,
       "width": 1650,
-      "height": 1567
+      "height": 1587
     },
     {
       "id": "vnet",
@@ -103,7 +103,7 @@
       "id": "kv",
       "label": "Key Vault",
       "x": 270,
-      "y": 1327,
+      "y": 1347,
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
       "parentId": "rg"
@@ -112,7 +112,7 @@
       "id": "storage",
       "label": "Storage Account",
       "x": 673,
-      "y": 1142,
+      "y": 1137,
       "subtitle": "aifoundationdevsa",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
       "parentId": "rg"
@@ -121,7 +121,7 @@
       "id": "ai_hub",
       "label": "Azure AI Foundry",
       "x": 1170,
-      "y": 1327,
+      "y": 1347,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
       "parentId": "rg"
