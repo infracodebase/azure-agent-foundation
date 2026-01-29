@@ -13,6 +13,7 @@ locals {
   api_center_name      = "${var.project_name}-${var.environment}-apicenter-${local.name_suffix}"
   container_env_name   = "${var.project_name}-${var.environment}-containerenv-${local.name_suffix}"
   container_app_name   = "${var.project_name}-${var.environment}-chat-${local.name_suffix}"
+  cosmos_account_name  = "${var.project_name}-${var.environment}-cosmos-${local.name_suffix}"
   vnet_name            = "${var.project_name}-${var.environment}-vnet"
 
   # Network configuration
