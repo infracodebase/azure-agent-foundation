@@ -9,8 +9,8 @@
       "type": "container",
       "x": -564,
       "y": -140,
-      "width": 1790,
-      "height": 1956
+      "width": 1880,
+      "height": 1902
     },
     {
       "id": "vnet",
@@ -20,8 +20,8 @@
       "type": "container",
       "x": 90,
       "y": 352,
-      "width": 1610,
-      "height": 1120,
+      "width": 1700,
+      "height": 1210,
       "parentId": "rg"
     },
     {
@@ -58,10 +58,10 @@
       "subtitle": "Function Apps",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "x": 493,
-      "y": 180,
-      "width": 300,
-      "height": 330,
+      "x": 490,
+      "y": 90,
+      "width": 480,
+      "height": 510,
       "parentId": "vnet",
       "decorators": [
         {
@@ -72,13 +72,25 @@
       ]
     },
     {
+      "id": "app_service_plan",
+      "label": "App Service Plan",
+      "subtitle": "Consumption/Premium",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/app-service-plan.png",
+      "type": "container",
+      "x": 90,
+      "y": 90,
+      "width": 300,
+      "height": 330,
+      "parentId": "func_subnet"
+    },
+    {
       "id": "function_app",
       "label": "Function App",
       "subtitle": "ai-foundation-dev-func",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/function-app.png",
       "x": 90,
       "y": 90,
-      "parentId": "func_subnet"
+      "parentId": "app_service_plan"
     },
     {
       "id": "container_subnet",
@@ -86,8 +98,8 @@
       "subtitle": "10.0.3.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "x": 900,
-      "y": 90,
+      "x": 1130,
+      "y": 155,
       "width": 480,
       "height": 510,
       "parentId": "vnet",
@@ -123,17 +135,17 @@
     {
       "id": "private_endpoint_subnet",
       "label": "Private Endpoint Subnet",
-      "x": 90,
-      "y": 700,
       "subtitle": "Secure connectivity",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/networking.png",
       "type": "container",
+      "x": 90,
+      "y": 790,
       "width": 1430,
       "height": 330,
       "parentId": "vnet",
       "decorators": [
         {
-          "icon": "/icons/azure/networking/network-security-group.png",
+          "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/network-security-group.png",
           "position": "top-right",
           "tooltip": "Network Security Group"
         }
@@ -182,7 +194,7 @@
     {
       "id": "postgres_pe",
       "label": "PostgreSQL PE",
-      "icon": "/icons/azure/networking/private-endpoint.png",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
       "x": 1220,
       "y": 90,
       "parentId": "private_endpoint_subnet"
@@ -190,28 +202,28 @@
     {
       "id": "kv",
       "label": "Key Vault",
+      "x": 270,
+      "y": 1662,
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
-      "x": 270,
-      "y": 1666,
       "parentId": "rg"
     },
     {
       "id": "storage",
       "label": "Storage Account",
+      "x": 490,
+      "y": 1662,
       "subtitle": "Function App data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
-      "x": 490,
-      "y": 1666,
       "parentId": "rg"
     },
     {
       "id": "ai_hub",
       "label": "Azure AI Foundry",
+      "x": 710,
+      "y": 1662,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
-      "x": 710,
-      "y": 1572,
       "parentId": "rg"
     },
     {
@@ -244,28 +256,28 @@
     {
       "id": "cosmos_db",
       "label": "Cosmos DB",
+      "x": 1170,
+      "y": 1662,
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
-      "x": 1170,
-      "y": 1666,
       "parentId": "rg"
     },
     {
       "id": "ai_storage",
       "label": "AI Storage",
+      "x": 940,
+      "y": 1662,
       "subtitle": "Models & training data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
-      "x": 940,
-      "y": 1666,
       "parentId": "rg"
     },
     {
       "id": "postgres_db",
       "label": "PostgreSQL Database",
-      "subtitle": "Flexible Server",
-      "icon": "/icons/azure/data/azure-database-for-postgresql.png",
       "x": 1400,
-      "y": 1666,
+      "y": 1662,
+      "subtitle": "Flexible Server",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-database-for-postgresql.png",
       "parentId": "rg"
     }
   ],
