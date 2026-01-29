@@ -56,15 +56,15 @@ resource "azurerm_network_security_group" "apim" {
     source_port_range          = "*"
     destination_port_ranges    = ["80", "443"]
     source_address_prefix      = "*"
-    destination_address_prefix = local.func_subnet_prefix
+    destination_address_prefix = local.compute_subnet_prefix
   }
 
   tags = local.common_tags
 }
 
 # NSG for Function App subnet
-resource "azurerm_network_security_group" "func" {
-  name                = "${local.function_app_name}-nsg"
+resource "azurerm_network_security_group" "compute" {
+  name                = "compute-nsg"
   location            = azurerm_resource_group.this.location
   resource_group_name = azurerm_resource_group.this.name
 
@@ -152,10 +152,10 @@ resource "azurerm_subnet_network_security_group_association" "apim" {
   network_security_group_id = azurerm_network_security_group.apim.id
 }
 
-resource "azurerm_subnet_network_security_group_association" "func" {
+resource "azurerm_subnet_network_security_group_association" "compute" {
   count                     = var.enable_private_networking ? 1 : 0
-  subnet_id                 = azurerm_subnet.func[0].id
-  network_security_group_id = azurerm_network_security_group.func.id
+  subnet_id                 = azurerm_subnet.compute[0].id
+  network_security_group_id = azurerm_network_security_group.compute.id
 }
 
 resource "azurerm_subnet_network_security_group_association" "container" {

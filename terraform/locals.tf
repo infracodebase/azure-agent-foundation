@@ -18,10 +18,11 @@ locals {
   vnet_name            = "${var.project_name}-${var.environment}-vnet"
 
   # Network configuration
-  vnet_address_space      = ["10.0.0.0/16"]
-  apim_subnet_prefix      = "10.0.1.0/24"
-  func_subnet_prefix      = "10.0.2.0/24"
-  container_subnet_prefix = "10.0.4.0/23" # Container Apps requires at least /23
+  vnet_address_space        = ["10.0.0.0/16"]
+  apim_subnet_prefix        = "10.0.1.0/24"
+  compute_subnet_prefix     = "10.0.2.0/24"  # For Function Apps and Container Apps
+  container_subnet_prefix   = "10.0.4.0/23"  # Container Apps requires at least /23
+  private_endpoint_prefix   = "10.0.6.0/24"  # For all private endpoints
 
   # Common tags with additional context
   common_tags = merge(var.tags, {
