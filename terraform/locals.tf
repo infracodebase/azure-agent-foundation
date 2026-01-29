@@ -15,6 +15,7 @@ locals {
   container_env_name   = "${var.project_name}-${var.environment}-containerenv-${local.name_suffix}"
   container_app_name   = "${var.project_name}-${var.environment}-chat-${local.name_suffix}"
   cosmos_account_name  = "${var.project_name}-${var.environment}-cosmos-${local.name_suffix}"
+  postgresql_server_name = "${var.project_name}-${var.environment}-postgres-${local.name_suffix}"
   vnet_name            = "${var.project_name}-${var.environment}-vnet"
 
   # Network configuration
@@ -23,6 +24,11 @@ locals {
   compute_subnet_prefix     = "10.0.2.0/24"  # For Function Apps and Container Apps
   container_subnet_prefix   = "10.0.4.0/23"  # Container Apps requires at least /23
   private_endpoint_prefix   = "10.0.6.0/24"  # For all private endpoints
+
+  # PostgreSQL configuration
+  postgres_admin_username = "aifadmin"
+  postgres_admin_password = random_password.postgres_admin.result
+  app_database_name       = "${var.project_name}_${var.environment}_db"
 
   # Common tags with additional context
   common_tags = merge(var.tags, {

@@ -57,6 +57,21 @@ resource "azurerm_container_app" "chat_interface" {
         value = azurerm_cognitive_account.ai_foundry.name
       }
 
+      env {
+        name        = "DATABASE_URL"
+        secret_name = "postgres-connection-string"
+      }
+
+      env {
+        name  = "DATABASE_HOST"
+        value = azurerm_postgresql_flexible_server.app_database.fqdn
+      }
+
+      env {
+        name  = "DATABASE_NAME"
+        value = azurerm_postgresql_flexible_server_database.app_database.name
+      }
+
       # Startup and liveness probes
       startup_probe {
         transport = "HTTP"
@@ -84,6 +99,11 @@ resource "azurerm_container_app" "chat_interface" {
   secret {
     name  = "api-subscription-key"
     value = azurerm_api_management_subscription.crud_api_subscription.primary_key
+  }
+
+  secret {
+    name        = "postgres-connection-string"
+    key_vault_secret_id = azurerm_key_vault_secret.postgres_connection_string.id
   }
 
   # Ingress configuration for external access

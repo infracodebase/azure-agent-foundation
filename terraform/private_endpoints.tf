@@ -38,6 +38,12 @@ resource "azurerm_private_dns_zone" "ai_foundry" {
   tags                = local.common_tags
 }
 
+resource "azurerm_private_dns_zone" "postgresql" {
+  name                = "privatelink.postgres.database.azure.com"
+  resource_group_name = azurerm_resource_group.this.name
+  tags                = local.common_tags
+}
+
 # Link DNS zones to VNet
 resource "azurerm_private_dns_zone_virtual_network_link" "key_vault" {
   count                 = var.enable_private_networking ? 1 : 0
@@ -89,6 +95,15 @@ resource "azurerm_private_dns_zone_virtual_network_link" "ai_foundry" {
   name                  = "ai-foundry-dns-link"
   resource_group_name   = azurerm_resource_group.this.name
   private_dns_zone_name = azurerm_private_dns_zone.ai_foundry.name
+  virtual_network_id    = azurerm_virtual_network.this[0].id
+  tags                  = local.common_tags
+}
+
+resource "azurerm_private_dns_zone_virtual_network_link" "postgresql" {
+  count                 = var.enable_private_networking ? 1 : 0
+  name                  = "postgresql-dns-link"
+  resource_group_name   = azurerm_resource_group.this.name
+  private_dns_zone_name = azurerm_private_dns_zone.postgresql.name
   virtual_network_id    = azurerm_virtual_network.this[0].id
   tags                  = local.common_tags
 }
@@ -218,4 +233,31 @@ resource "azurerm_private_endpoint" "ai_foundry" {
   }
 
   tags = local.common_tags
+}
+
+# PostgreSQL Private Endpoint
+resource "azurerm_private_endpoint" "postgresql" {
+  count               = var.enable_private_networking ? 1 : 0
+  name                = "${local.postgresql_server_name}-pe"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  subnet_id           = azurerm_subnet.private_endpoints[0].id
+
+  private_service_connection {
+    name                           = "${local.postgresql_server_name}-psc"
+    private_connection_resource_id = azurerm_postgresql_flexible_server.app_database.id
+    subresource_names              = ["postgresqlServer"]
+    is_manual_connection           = false
+  }
+
+  private_dns_zone_group {
+    name                 = "postgresql-dns-zone-group"
+    private_dns_zone_ids = [azurerm_private_dns_zone.postgresql.id]
+  }
+
+  tags = local.common_tags
+
+  depends_on = [
+    azurerm_postgresql_flexible_server.app_database
+  ]
 }

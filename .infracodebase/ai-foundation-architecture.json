@@ -9,8 +9,8 @@
       "type": "container",
       "x": -564,
       "y": -140,
-      "width": 1650,
-      "height": 1956
+      "width": 1790,
+      "height": 1906
     },
     {
       "id": "vnet",
@@ -20,7 +20,7 @@
       "type": "container",
       "x": 90,
       "y": 352,
-      "width": 1470,
+      "width": 1610,
       "height": 1120,
       "parentId": "rg"
     },
@@ -121,6 +121,66 @@
       "parentId": "container_env"
     },
     {
+      "id": "private_endpoint_subnet",
+      "label": "Private Endpoint Subnet",
+      "subtitle": "Secure connectivity",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/networking.png",
+      "type": "container",
+      "x": 90,
+      "y": 700,
+      "width": 1430,
+      "height": 330,
+      "parentId": "vnet"
+    },
+    {
+      "id": "kv_pe",
+      "label": "Key Vault PE",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
+      "x": 90,
+      "y": 90,
+      "parentId": "private_endpoint_subnet"
+    },
+    {
+      "id": "storage_pe",
+      "label": "Storage PE",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
+      "x": 310,
+      "y": 90,
+      "parentId": "private_endpoint_subnet"
+    },
+    {
+      "id": "ai_storage_pe",
+      "label": "AI Storage PE",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
+      "x": 760,
+      "y": 90,
+      "parentId": "private_endpoint_subnet"
+    },
+    {
+      "id": "cosmos_pe",
+      "label": "Cosmos PE",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
+      "x": 990,
+      "y": 90,
+      "parentId": "private_endpoint_subnet"
+    },
+    {
+      "id": "ai_foundry_pe",
+      "label": "AI Foundry PE",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
+      "x": 530,
+      "y": 90,
+      "parentId": "private_endpoint_subnet"
+    },
+    {
+      "id": "postgres_pe",
+      "label": "PostgreSQL PE",
+      "x": 1220,
+      "y": 90,
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/managed-database.png",
+      "parentId": "private_endpoint_subnet"
+    },
+    {
       "id": "kv",
       "label": "Key Vault",
       "subtitle": "ai-foundation-dev-kv",
@@ -141,10 +201,10 @@
     {
       "id": "ai_hub",
       "label": "Azure AI Foundry",
-      "x": 710,
-      "y": 1572,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
+      "x": 710,
+      "y": 1572,
       "parentId": "rg"
     },
     {
@@ -193,56 +253,13 @@
       "parentId": "rg"
     },
     {
-      "id": "private_endpoint_subnet",
-      "label": "Private Endpoint Subnet",
-      "subtitle": "Secure connectivity",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/networking.png",
-      "type": "container",
-      "x": 90,
-      "y": 700,
-      "width": 1200,
-      "height": 330,
-      "parentId": "vnet"
-    },
-    {
-      "id": "kv_pe",
-      "label": "Key Vault PE",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 90,
-      "y": 90,
-      "parentId": "private_endpoint_subnet"
-    },
-    {
-      "id": "storage_pe",
-      "label": "Storage PE",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 310,
-      "y": 90,
-      "parentId": "private_endpoint_subnet"
-    },
-    {
-      "id": "ai_storage_pe",
-      "label": "AI Storage PE",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 760,
-      "y": 90,
-      "parentId": "private_endpoint_subnet"
-    },
-    {
-      "id": "cosmos_pe",
-      "label": "Cosmos PE",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 990,
-      "y": 90,
-      "parentId": "private_endpoint_subnet"
-    },
-    {
-      "id": "ai_foundry_pe",
-      "label": "AI Foundry PE",
-      "x": 530,
-      "y": 90,
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "parentId": "private_endpoint_subnet"
+      "id": "postgres_db",
+      "label": "PostgreSQL Database",
+      "x": 1400,
+      "y": 1666,
+      "subtitle": "Flexible Server",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/managed-database.png",
+      "parentId": "rg"
     }
   ],
   "edges": [
@@ -353,6 +370,18 @@
       "source": "chat_app",
       "target": "ai_foundry_pe",
       "label": "accesses via PE"
+    },
+    {
+      "id": "chat_to_postgres_pe",
+      "source": "chat_app",
+      "target": "postgres_pe",
+      "label": "database queries"
+    },
+    {
+      "id": "postgres_pe_to_postgres",
+      "source": "postgres_pe",
+      "target": "postgres_db",
+      "label": "private connection"
     }
   ]
 }
