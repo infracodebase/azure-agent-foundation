@@ -123,14 +123,21 @@
     {
       "id": "private_endpoint_subnet",
       "label": "Private Endpoint Subnet",
+      "x": 90,
+      "y": 700,
       "subtitle": "Secure connectivity",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/networking.png",
       "type": "container",
-      "x": 90,
-      "y": 700,
       "width": 1430,
       "height": 330,
-      "parentId": "vnet"
+      "parentId": "vnet",
+      "decorators": [
+        {
+          "icon": "/icons/azure/networking/network-security-group.png",
+          "position": "top-right",
+          "tooltip": "Network Security Group"
+        }
+      ]
     },
     {
       "id": "kv_pe",
@@ -175,9 +182,9 @@
     {
       "id": "postgres_pe",
       "label": "PostgreSQL PE",
+      "icon": "/icons/azure/networking/private-endpoint.png",
       "x": 1220,
       "y": 90,
-      "icon": "/icons/azure/networking/private-endpoint.png",
       "parentId": "private_endpoint_subnet"
     },
     {
@@ -255,10 +262,10 @@
     {
       "id": "postgres_db",
       "label": "PostgreSQL Database",
-      "x": 1400,
-      "y": 1666,
       "subtitle": "Flexible Server",
       "icon": "/icons/azure/data/azure-database-for-postgresql.png",
+      "x": 1400,
+      "y": 1666,
       "parentId": "rg"
     }
   ],
