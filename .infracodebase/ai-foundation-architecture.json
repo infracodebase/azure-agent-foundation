@@ -4,106 +4,106 @@
     {
       "id": "rg",
       "label": "Resource Group",
-      "x": -375,
-      "y": -256,
       "subtitle": "ai-foundation-dev-rg",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/resource-group.png",
       "type": "container",
+      "x": -375,
+      "y": -256,
       "width": 1650,
-      "height": 1380
+      "height": 1432
     },
     {
       "id": "vnet",
       "label": "Virtual Network",
-      "x": 90,
-      "y": 352,
       "subtitle": "ai-foundation-dev-vnet",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "parentId": "rg",
+      "x": 90,
+      "y": 352,
       "width": 1470,
-      "height": 690
+      "height": 690,
+      "parentId": "rg"
     },
     {
       "id": "apim_subnet",
       "label": "APIM Subnet",
-      "x": 90,
-      "y": 180,
       "subtitle": "10.0.1.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "parentId": "vnet",
+      "x": 90,
+      "y": 180,
       "width": 300,
-      "height": 330
+      "height": 330,
+      "parentId": "vnet"
     },
     {
       "id": "func_subnet",
       "label": "Function Subnet",
-      "x": 493,
-      "y": 180,
       "subtitle": "10.0.2.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "parentId": "vnet",
+      "x": 493,
+      "y": 180,
       "width": 300,
-      "height": 330
+      "height": 330,
+      "parentId": "vnet"
     },
     {
       "id": "container_subnet",
       "label": "Container Subnet",
-      "x": 900,
-      "y": 90,
       "subtitle": "10.0.3.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "parentId": "vnet",
+      "x": 900,
+      "y": 90,
       "width": 480,
-      "height": 510
+      "height": 510,
+      "parentId": "vnet"
     },
     {
       "id": "apim",
       "label": "API Management",
-      "x": 90,
-      "y": 90,
       "subtitle": "ai-foundation-dev-apim",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/api-management.png",
+      "x": 90,
+      "y": 90,
       "parentId": "apim_subnet"
     },
     {
       "id": "function_app",
       "label": "Function App",
-      "x": 90,
-      "y": 90,
       "subtitle": "ai-foundation-dev-func",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/function-app.png",
+      "x": 90,
+      "y": 90,
       "parentId": "func_subnet"
     },
     {
       "id": "container_env",
       "label": "Container Apps Environment",
-      "x": 90,
-      "y": 90,
       "subtitle": "ai-foundation-dev-containerenv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/container-app.png",
       "type": "container",
-      "parentId": "container_subnet",
+      "x": 90,
+      "y": 90,
       "width": 300,
-      "height": 330
+      "height": 330,
+      "parentId": "container_subnet"
     },
     {
       "id": "chat_app",
       "label": "Container App",
-      "x": 90,
-      "y": 90,
       "subtitle": "ai-foundation-chat",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/container-app.png",
+      "x": 90,
+      "y": 90,
       "parentId": "container_env"
     },
     {
       "id": "kv",
       "label": "Key Vault",
       "x": 270,
-      "y": 1140,
+      "y": 1142,
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
       "parentId": "rg"
@@ -112,7 +112,7 @@
       "id": "storage",
       "label": "Storage Account",
       "x": 673,
-      "y": 1140,
+      "y": 1142,
       "subtitle": "aifoundationdevsa",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
       "parentId": "rg"
@@ -121,7 +121,7 @@
       "id": "ai_hub",
       "label": "Azure AI Foundry",
       "x": 1170,
-      "y": 1140,
+      "y": 1142,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
       "parentId": "rg"
@@ -130,7 +130,7 @@
       "id": "api_center",
       "label": "API Center",
       "x": 270,
-      "y": 116,
+      "y": 102,
       "subtitle": "ai-foundation-apicenter (AzAPI)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/api-center.png",
       "parentId": "rg"
@@ -138,19 +138,19 @@
     {
       "id": "app_insights",
       "label": "Application Insights",
-      "x": 929,
-      "y": 90,
       "subtitle": "ai-foundation-insights",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/application-insights.png",
+      "x": 929,
+      "y": 90,
       "parentId": "rg"
     },
     {
       "id": "log_analytics",
       "label": "Log Analytics Workspace",
-      "x": 1234,
-      "y": 90,
       "subtitle": "ai-foundation-logs",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/log-analytics-workspace.png",
+      "x": 1234,
+      "y": 90,
       "parentId": "rg"
     }
   ],
@@ -196,12 +196,6 @@
       "source": "chat_app",
       "target": "ai_hub",
       "label": "uses declarative agent"
-    },
-    {
-      "id": "ai_hub_to_storage",
-      "source": "ai_hub",
-      "target": "storage",
-      "label": "stores models/data"
     },
     {
       "id": "ai_hub_to_kv",
