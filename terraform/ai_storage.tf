@@ -48,25 +48,25 @@ resource "azurerm_storage_account_network_rules" "ai_foundry" {
 
 # Storage containers for AI Foundry workloads
 resource "azurerm_storage_container" "ai_models" {
-  name                 = "ai-models"
-  storage_account_id   = azurerm_storage_account.ai_foundry.id
+  name                  = "ai-models"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "training_data" {
-  name                 = "training-data"
-  storage_account_id   = azurerm_storage_account.ai_foundry.id
+  name                  = "training-data"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "search_indexes" {
-  name                 = "search-indexes"
-  storage_account_id   = azurerm_storage_account.ai_foundry.id
+  name                  = "search-indexes"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "documents" {
-  name                 = "documents"
-  storage_account_id   = azurerm_storage_account.ai_foundry.id
+  name                  = "documents"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
   container_access_type = "private"
 }

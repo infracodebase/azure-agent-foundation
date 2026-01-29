@@ -75,6 +75,16 @@ output "container_app_url" {
   value       = "https://${azurerm_container_app.chat_interface.latest_revision_fqdn}"
 }
 
+output "front_door_endpoint_url" {
+  description = "Azure Front Door endpoint URL for secure external access"
+  value       = "https://${azurerm_cdn_frontdoor_endpoint.this.host_name}"
+}
+
+output "front_door_name" {
+  description = "Name of the Azure Front Door profile"
+  value       = azurerm_cdn_frontdoor_profile.this.name
+}
+
 output "virtual_network_name" {
   description = "Name of the virtual network (only when private networking is enabled)"
   value       = var.enable_private_networking ? azurerm_virtual_network.this[0].name : null

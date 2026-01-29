@@ -6,6 +6,7 @@ This directory contains the Terraform configuration for deploying the Azure AI F
 
 The infrastructure deploys a complete Azure AI Foundation with:
 
+- **Azure Front Door** - CDN with Web Application Firewall (WAF) protection
 - **API Management** - Exposes Function App as MCP server
 - **Function App** - CRUD REST service (MCP server implementation)
 - **Azure AI Foundry** - Modern AI services with hub, project, and agent management
@@ -13,9 +14,10 @@ The infrastructure deploys a complete Azure AI Foundation with:
   - Pre-configured AI agents (sample, customer support, data analysis)
 - **API Center** - API governance and discovery
 - **Container Apps** - Chat interface application
+- **PostgreSQL Flexible Server** - Managed database with private endpoints
 - **Key Vault** - Secure secrets management
 - **Storage Account** - Data persistence
-- **Virtual Network** - Secure networking with 3 subnets
+- **Virtual Network** - Secure networking with private endpoints
 - **Application Insights & Log Analytics** - Monitoring
 
 ## 💰 Estimated Cost
@@ -89,7 +91,10 @@ After deployment, Terraform provides these key outputs:
 - ✅ Streamable HTTP transport
 
 ### Security & Compliance
+- ✅ Azure Front Door with WAF protection
 - ✅ Managed identities for secure authentication
+- ✅ Private endpoints for all PaaS services
+- ✅ Network Security Groups (NSGs) on all subnets
 - ✅ Key Vault integration for secrets
 - ✅ Virtual network isolation
 - ✅ RBAC with least privilege

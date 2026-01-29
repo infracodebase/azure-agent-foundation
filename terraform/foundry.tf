@@ -44,7 +44,7 @@ resource "azapi_resource" "ai_storage_connection" {
     properties = {
       category = "AzureBlob"
       target   = azurerm_storage_account.ai_foundry.primary_blob_endpoint
-      authType = "AAD"  # Use Azure AD authentication
+      authType = "AAD" # Use Azure AD authentication
       metadata = {
         ResourceId = azurerm_storage_account.ai_foundry.id
       }
@@ -71,7 +71,7 @@ resource "azurerm_role_assignment" "project_ai_user" {
   scope                = azurerm_cognitive_account.ai_foundry.id
   role_definition_name = "Azure AI User"
   principal_id         = azapi_resource.ai_foundry_project.identity[0].principal_id
-  
+
   depends_on = [azapi_resource.ai_foundry_project]
 }
 

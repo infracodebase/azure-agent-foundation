@@ -102,11 +102,11 @@ resource "azurerm_container_app" "chat_interface" {
   }
 
   secret {
-    name        = "postgres-connection-string"
+    name                = "postgres-connection-string"
     key_vault_secret_id = azurerm_key_vault_secret.postgres_connection_string.id
   }
 
-  # Ingress configuration for external access
+  # Ingress configuration for external access through Azure Front Door
   ingress {
     external_enabled = true
     target_port      = 8080
@@ -116,6 +116,9 @@ resource "azurerm_container_app" "chat_interface" {
       percentage      = 100
       latest_revision = true
     }
+
+    # Note: Container App is accessible directly and through Azure Front Door
+    # Additional security rules can be configured in Front Door WAF policies
   }
 
   tags = local.common_tags

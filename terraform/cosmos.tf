@@ -19,8 +19,8 @@ resource "azurerm_cosmosdb_account" "ai_foundry" {
   }
 
   # Security configurations
-  public_network_access_enabled      = true  # Can be restricted based on requirements
-  is_virtual_network_filter_enabled  = false
+  public_network_access_enabled     = true # Can be restricted based on requirements
+  is_virtual_network_filter_enabled = false
 
   tags = local.common_tags
 }
@@ -110,7 +110,7 @@ resource "azapi_resource" "cosmos_db_connection" {
     properties = {
       category = "CosmosDB"
       target   = azurerm_cosmosdb_account.ai_foundry.endpoint
-      authType = "AAD"  # Use Azure AD authentication
+      authType = "AAD" # Use Azure AD authentication
       metadata = {
         ResourceId   = azurerm_cosmosdb_account.ai_foundry.id
         DatabaseName = azurerm_cosmosdb_sql_database.enterprise_memory.name

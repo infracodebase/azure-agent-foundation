@@ -110,14 +110,14 @@ resource "azurerm_private_dns_zone_virtual_network_link" "postgresql" {
 
 # Private Endpoint Subnet
 resource "azurerm_subnet" "private_endpoints" {
-  count            = var.enable_private_networking ? 1 : 0
-  name             = "private-endpoints-subnet"
+  count                = var.enable_private_networking ? 1 : 0
+  name                 = "private-endpoints-subnet"
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this[0].name
-  address_prefixes = [local.private_endpoint_prefix]
+  address_prefixes     = [local.private_endpoint_prefix]
 
   # Disable network policies for private endpoints
-  private_endpoint_network_policies_enabled = false
+  private_endpoint_network_policies = "Disabled"
 }
 
 # Key Vault Private Endpoint

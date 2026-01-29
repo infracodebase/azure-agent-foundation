@@ -11,31 +11,31 @@ resource "random_password" "postgres_admin" {
 }
 
 resource "azurerm_postgresql_flexible_server" "app_database" {
-  name                         = local.postgresql_server_name
-  resource_group_name          = azurerm_resource_group.this.name
-  location                     = azurerm_resource_group.this.location
+  name                = local.postgresql_server_name
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
 
   # Server configuration
-  version                      = "16"         # Latest stable PostgreSQL version
-  administrator_login          = local.postgres_admin_username
-  administrator_password       = local.postgres_admin_password
+  version                = "16" # Latest stable PostgreSQL version
+  administrator_login    = local.postgres_admin_username
+  administrator_password = local.postgres_admin_password
 
   # SKU configuration for production workloads
-  sku_name                     = "GP_Standard_D2s_v3"  # General Purpose, 2 vCores, 8GB RAM
-  storage_mb                   = 32768                  # 32GB storage, can auto-grow
-  storage_tier                 = "P10"                 # Premium SSD for better performance
+  sku_name     = "GP_Standard_D2s_v3" # General Purpose, 2 vCores, 8GB RAM
+  storage_mb   = 32768                # 32GB storage, can auto-grow
+  storage_tier = "P10"                # Premium SSD for better performance
 
   # Backup configuration
   backup_retention_days        = 7
-  geo_redundant_backup_enabled = false  # Can be enabled for higher availability needs
+  geo_redundant_backup_enabled = false # Can be enabled for higher availability needs
 
   # High availability (can be enabled for production)
   high_availability {
-    mode = "SameZone"  # or "ZoneRedundant" for higher availability
+    mode = "SameZone" # or "ZoneRedundant" for higher availability
   }
 
   # Security configurations
-  public_network_access_enabled = false  # Only private access via private endpoint
+  public_network_access_enabled = false # Only private access via private endpoint
 
   # Note: When using private endpoints (not VNet injection), we don't need
   # delegated_subnet_id. Access happens via private endpoint in the private endpoint subnet
@@ -63,10 +63,10 @@ resource "azurerm_postgresql_flexible_server_active_directory_administrator" "co
   count               = var.enable_private_networking ? 1 : 0
   server_name         = azurerm_postgresql_flexible_server.app_database.name
   resource_group_name = azurerm_resource_group.this.name
-  tenant_id          = data.azurerm_client_config.current.tenant_id
-  object_id          = azurerm_container_app.chat_interface.identity[0].principal_id
-  principal_name     = azurerm_container_app.chat_interface.name
-  principal_type     = "ServicePrincipal"
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  object_id           = azurerm_container_app.chat_interface.identity[0].principal_id
+  principal_name      = azurerm_container_app.chat_interface.name
+  principal_type      = "ServicePrincipal"
 }
 
 # Store PostgreSQL connection string in Key Vault
@@ -76,7 +76,7 @@ resource "azurerm_key_vault_secret" "postgres_connection_string" {
   key_vault_id = azurerm_key_vault.this.id
 
   depends_on = [
-    azurerm_key_vault_access_policy.terraform_deployment,
+    azurerm_role_assignment.kv_admin_current,
     azurerm_postgresql_flexible_server.app_database,
     azurerm_postgresql_flexible_server_database.app_database
   ]
@@ -89,6 +89,6 @@ resource "azurerm_key_vault_secret" "postgres_admin_password" {
   key_vault_id = azurerm_key_vault.this.id
 
   depends_on = [
-    azurerm_key_vault_access_policy.terraform_deployment
+    azurerm_role_assignment.kv_admin_current
   ]
 }
