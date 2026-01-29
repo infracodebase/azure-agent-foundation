@@ -9,7 +9,7 @@
       "type": "container",
       "x": -375,
       "y": -256,
-      "width": 1680,
+      "width": 1650,
       "height": 1587
     },
     {
@@ -156,7 +156,7 @@
     {
       "id": "cosmos_db",
       "label": "Cosmos DB",
-      "x": 1470,
+      "x": 1440,
       "y": 1347,
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
