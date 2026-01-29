@@ -38,14 +38,13 @@ resource "azurerm_subnet" "apim" {
   service_endpoints    = ["Microsoft.KeyVault"]
 }
 
-# Subnet for Function App
-resource "azurerm_subnet" "func" {
+# Subnet for Compute Services (Function Apps)
+resource "azurerm_subnet" "compute" {
   count                = var.enable_private_networking ? 1 : 0
-  name                 = "func-subnet"
+  name                 = "compute-subnet"
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this[0].name
-  address_prefixes     = [local.func_subnet_prefix]
-  service_endpoints    = ["Microsoft.KeyVault", "Microsoft.Storage"]
+  address_prefixes     = [local.compute_subnet_prefix]
 
   delegation {
     name = "Microsoft.Web.serverFarms"

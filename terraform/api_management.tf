@@ -344,11 +344,11 @@ resource "azapi_resource" "mcp_server" {
 
   body = {
     properties = {
-      displayName         = "CRUD MCP Server"
-      path                = "crud-mcp"
-      protocols           = ["https"]
+      displayName          = "CRUD MCP Server"
+      path                 = "crud-mcp"
+      protocols            = ["https"]
       subscriptionRequired = false
-      type                = "mcp"
+      type                 = "mcp"
       mcpTools = [
         {
           name        = "getAllItems"

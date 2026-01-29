@@ -30,7 +30,7 @@ resource "azurerm_linux_function_app" "this" {
   public_network_access_enabled = true
 
   # Enable virtual network integration (only when private networking is enabled)
-  virtual_network_subnet_id = var.enable_private_networking ? azurerm_subnet.func[0].id : null
+  virtual_network_subnet_id = var.enable_private_networking ? azurerm_subnet.compute[0].id : null
 
   identity {
     type = "SystemAssigned"
@@ -66,9 +66,9 @@ resource "azurerm_linux_function_app" "this" {
 
   # Application settings with Key Vault references
   app_settings = {
-    "FUNCTIONS_WORKER_RUNTIME"  = "python"
-    "WEBSITE_RUN_FROM_PACKAGE"  = "1"
-    "AzureWebJobsFeatureFlags"  = "EnableWorkerIndexing"
+    "FUNCTIONS_WORKER_RUNTIME" = "python"
+    "WEBSITE_RUN_FROM_PACKAGE" = "1"
+    "AzureWebJobsFeatureFlags" = "EnableWorkerIndexing"
 
     # Key Vault references for sensitive data
     "STORAGE_CONNECTION_STRING" = "@Microsoft.KeyVault(VaultName=${azurerm_key_vault.this.name};SecretName=storage-connection-string)"
@@ -84,15 +84,15 @@ resource "azurerm_linux_function_app" "this" {
     # - GET /api/mcp/resources: Lists available resources
     # - GET /api/mcp/tools: Lists available tools
     # - POST /api/mcp/tools: Executes MCP tools
-    "MCP_SERVER_NAME"             = "crud-mcp-server"
-    "MCP_SERVER_VERSION"          = "1.0.0"
-    "MCP_PROTOCOL_VERSION"        = "2024-11-05"
-    "MCP_CAPABILITIES_RESOURCES"  = "true"
-    "MCP_CAPABILITIES_TOOLS"      = "true"
+    "MCP_SERVER_NAME"            = "crud-mcp-server"
+    "MCP_SERVER_VERSION"         = "1.0.0"
+    "MCP_PROTOCOL_VERSION"       = "2024-11-05"
+    "MCP_CAPABILITIES_RESOURCES" = "true"
+    "MCP_CAPABILITIES_TOOLS"     = "true"
 
     # API Management integration
-    "API_MANAGEMENT_URL"          = azurerm_api_management.this.gateway_url
-    "API_CENTER_DISCOVERY_URL"    = "https://portal.azure.com/#@${data.azurerm_client_config.current.tenant_id}/resource/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.this.name}/providers/Microsoft.ApiCenter/services/${local.api_center_name}/overview"
+    "API_MANAGEMENT_URL"       = azurerm_api_management.this.gateway_url
+    "API_CENTER_DISCOVERY_URL" = "https://portal.azure.com/#@${data.azurerm_client_config.current.tenant_id}/resource/subscriptions/${data.azurerm_client_config.current.subscription_id}/resourceGroups/${azurerm_resource_group.this.name}/providers/Microsoft.ApiCenter/services/${local.api_center_name}/overview"
   }
 
   tags = local.common_tags

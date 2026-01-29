@@ -1,3 +1,12 @@
+# User-assigned managed identity for Container App to access Key Vault
+resource "azurerm_user_assigned_identity" "container_app" {
+  name                = "${local.container_app_name}-identity"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+
+  tags = local.common_tags
+}
+
 # Container Apps Environment
 resource "azurerm_container_app_environment" "this" {
   name                       = local.container_env_name
@@ -19,7 +28,8 @@ resource "azurerm_container_app" "chat_interface" {
   revision_mode                = "Single"
 
   identity {
-    type = "SystemAssigned"
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.container_app.id]
   }
 
   template {
@@ -57,6 +67,21 @@ resource "azurerm_container_app" "chat_interface" {
         value = azurerm_cognitive_account.ai_foundry.name
       }
 
+      env {
+        name        = "DATABASE_URL"
+        secret_name = "postgres-connection-string"
+      }
+
+      env {
+        name  = "DATABASE_HOST"
+        value = azurerm_postgresql_flexible_server.app_database.fqdn
+      }
+
+      env {
+        name  = "DATABASE_NAME"
+        value = azurerm_postgresql_flexible_server_database.app_database.name
+      }
+
       # Startup and liveness probes
       startup_probe {
         transport = "HTTP"
@@ -86,7 +111,13 @@ resource "azurerm_container_app" "chat_interface" {
     value = azurerm_api_management_subscription.crud_api_subscription.primary_key
   }
 
-  # Ingress configuration for external access
+  secret {
+    name                = "postgres-connection-string"
+    key_vault_secret_id = azurerm_key_vault_secret.postgres_connection_string.id
+    identity            = azurerm_user_assigned_identity.container_app.client_id
+  }
+
+  # Ingress configuration for external access through Azure Front Door
   ingress {
     external_enabled = true
     target_port      = 8080
@@ -96,6 +127,9 @@ resource "azurerm_container_app" "chat_interface" {
       percentage      = 100
       latest_revision = true
     }
+
+    # Note: Container App is accessible directly and through Azure Front Door
+    # Additional security rules can be configured in Front Door WAF policies
   }
 
   tags = local.common_tags
@@ -105,14 +139,14 @@ resource "azurerm_container_app" "chat_interface" {
 resource "azurerm_role_assignment" "container_app_kv_access" {
   scope                = azurerm_key_vault.this.id
   role_definition_name = "Key Vault Secrets User"
-  principal_id         = azurerm_container_app.chat_interface.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.container_app.principal_id
 }
 
 # Grant Container App managed identity access to AI Foundry
 resource "azurerm_role_assignment" "container_app_ai_access" {
   scope                = azurerm_cognitive_account.ai_foundry.id
   role_definition_name = "Cognitive Services User"
-  principal_id         = azurerm_container_app.chat_interface.identity[0].principal_id
+  principal_id         = azurerm_user_assigned_identity.container_app.principal_id
 }
 
 # Container App uses AI Hub directly for AI services - no additional role assignments needed
@@ -131,7 +165,7 @@ resource "azurerm_container_app_environment_dapr_component" "keyvault_secret_sto
 
   metadata {
     name  = "azureClientId"
-    value = azurerm_container_app.chat_interface.identity[0].principal_id
+    value = azurerm_user_assigned_identity.container_app.client_id
   }
 
   scopes = [azurerm_container_app.chat_interface.name]

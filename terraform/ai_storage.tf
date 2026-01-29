@@ -1,6 +1,7 @@
-# Storage Account for Function App and general storage needs
-resource "azurerm_storage_account" "this" {
-  name                     = local.storage_account_name
+# AI Foundry dedicated Storage Account
+# Separate from Function App storage for better workload isolation
+resource "azurerm_storage_account" "ai_foundry" {
+  name                     = local.ai_storage_name
   resource_group_name      = azurerm_resource_group.this.name
   location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
@@ -16,7 +17,7 @@ resource "azurerm_storage_account" "this" {
   infrastructure_encryption_enabled = true
 
   blob_properties {
-    # Enable blob versioning
+    # Enable blob versioning for AI model artifacts
     versioning_enabled = true
 
     # Enable soft delete for blobs
@@ -33,11 +34,11 @@ resource "azurerm_storage_account" "this" {
   tags = local.common_tags
 }
 
-# Storage Account network rules (only when private networking is enabled)
-resource "azurerm_storage_account_network_rules" "this" {
+# AI Foundry Storage Account network rules (only when private networking is enabled)
+resource "azurerm_storage_account_network_rules" "ai_foundry" {
   count = var.enable_private_networking ? 1 : 0
 
-  storage_account_id = azurerm_storage_account.this.id
+  storage_account_id = azurerm_storage_account.ai_foundry.id
 
   default_action             = "Deny"
   ip_rules                   = [chomp(data.http.current_ip.response_body)]
@@ -45,15 +46,27 @@ resource "azurerm_storage_account_network_rules" "this" {
   bypass                     = ["AzureServices", "Metrics", "Logging"]
 }
 
-# Storage containers for different purposes
-resource "azurerm_storage_container" "function_app" {
-  name                  = "function-app"
-  storage_account_id    = azurerm_storage_account.this.id
+# Storage containers for AI Foundry workloads
+resource "azurerm_storage_container" "ai_models" {
+  name                  = "ai-models"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
   container_access_type = "private"
 }
 
-resource "azurerm_storage_container" "api_data" {
-  name                  = "api-data"
-  storage_account_id    = azurerm_storage_account.this.id
+resource "azurerm_storage_container" "training_data" {
+  name                  = "training-data"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "search_indexes" {
+  name                  = "search-indexes"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
+  container_access_type = "private"
+}
+
+resource "azurerm_storage_container" "documents" {
+  name                  = "documents"
+  storage_account_id    = azurerm_storage_account.ai_foundry.id
   container_access_type = "private"
 }
