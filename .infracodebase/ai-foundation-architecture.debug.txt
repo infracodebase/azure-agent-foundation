@@ -1,367 +1,39 @@
 # Debug Log - ai-foundation-architecture.json
-# New request at 2026-01-29T03:59:08.905Z
+# New request at 2026-01-29T04:00:37.273Z
 ============================================================
 
-[2026-01-29T03:59:08.905Z] modify_diagram
+[2026-01-29T04:00:37.273Z] modify_diagram
 
 ## AGENT REASONING
-Adding MCP APIs inside API Management to show what specific APIs are being managed and to clarify the API flow architecture. MCP (Model Context Protocol) APIs are infrastructure-level components that enable AI agent functionality.
+Fixing the edge to show Container App connecting directly to MCP APIs rather than to API Management service itself, since the Container App consumes the specific MCP APIs
 
 ## AGENT INPUT
 {
-  "nodes": [
-    {
-      "id": "mcp_apis",
-      "x": 90,
-      "y": 90
-    }
-  ],
   "edges": [
     {
-      "id": "apim_to_mcp",
-      "source": "apim",
+      "id": "chat_to_mcp",
+      "source": "chat_app",
       "target": "mcp_apis"
-    },
-    {
-      "id": "mcp_to_func",
-      "source": "mcp_apis",
-      "target": "function_app"
     }
   ],
   "deleteEdgeIds": [
-    "apim_to_func"
+    "chat_to_apim"
   ]
 }
 
 ## CURRENT STATE
 Nodes (27):
-  rg: rel(-564, -140) abs(-564, -140) [1880x1952]
-  vnet: rel(90, 417) abs(-474, 277) [1700x1145] parent=rg
-  apim_subnet: rel(90, 180) abs(-384, 457) [300x330] parent=vnet
-  apim: rel(90, 90) abs(-294, 547) [120x150] parent=apim_subnet
-  func_subnet: rel(531, 90) abs(57, 367) [480x510] parent=vnet
-  app_service_plan: rel(90, 90) abs(147, 457) [300x330] parent=func_subnet
-  function_app: rel(90, 90) abs(237, 547) [120x150] parent=app_service_plan
-  container_subnet: rel(1130, 90) abs(656, 367) [480x510] parent=vnet
-  container_env: rel(90, 90) abs(746, 457) [300x330] parent=container_subnet
-  chat_app: rel(90, 90) abs(836, 547) [120x150] parent=container_env
-  private_endpoint_subnet: rel(90, 725) abs(-384, 1002) [1430x330] parent=vnet
-  kv_pe: rel(90, 90) abs(-294, 1092) [120x150] parent=private_endpoint_subnet
-  storage_pe: rel(310, 90) abs(-74, 1092) [120x150] parent=private_endpoint_subnet
-  ai_storage_pe: rel(760, 90) abs(376, 1092) [120x150] parent=private_endpoint_subnet
-  cosmos_pe: rel(990, 90) abs(606, 1092) [120x150] parent=private_endpoint_subnet
-  ai_foundry_pe: rel(530, 90) abs(146, 1092) [120x150] parent=private_endpoint_subnet
-  postgres_pe: rel(1220, 90) abs(836, 1092) [120x150] parent=private_endpoint_subnet
-  kv: rel(270, 1662) abs(-294, 1522) [120x150] parent=rg
-  storage: rel(490, 1662) abs(-74, 1522) [120x150] parent=rg
-  ai_hub: rel(710, 1662) abs(146, 1522) [120x150] parent=rg
-  api_center: rel(270, 102) abs(-294, -38) [120x150] parent=rg
-  app_insights: rel(929, 90) abs(365, -50) [120x150] parent=rg
-  log_analytics: rel(1234, 90) abs(670, -50) [120x150] parent=rg
-  cosmos_db: rel(1170, 1662) abs(606, 1522) [120x150] parent=rg
-  ai_storage: rel(940, 1662) abs(376, 1522) [120x150] parent=rg
-  postgres_db: rel(1400, 1662) abs(836, 1522) [120x150] parent=rg
-  mcp_apis: rel(90, 90) abs(-294, 547) [120x150] parent=apim_subnet
-
-Edges (21):
-  api_center_to_apim: api_center -> apim
-  chat_to_apim: chat_app -> apim
-  func_to_insights: function_app -> app_insights
-  chat_to_insights: chat_app -> app_insights
-  insights_to_logs: app_insights -> log_analytics
-  func_to_storage_pe: function_app -> storage_pe
-  func_to_kv_pe: function_app -> kv_pe
-  apim_to_kv_pe: apim -> kv_pe
-  ai_hub_to_kv_pe: ai_hub -> kv_pe
-  ai_hub_to_cosmos_pe: ai_hub -> cosmos_pe
-  ai_hub_to_ai_storage_pe: ai_hub -> ai_storage_pe
-  storage_pe_to_storage: storage_pe -> storage
-  kv_pe_to_kv: kv_pe -> kv
-  cosmos_pe_to_cosmos: cosmos_pe -> cosmos_db
-  ai_storage_pe_to_ai_storage: ai_storage_pe -> ai_storage
-  ai_foundry_pe_to_ai_hub: ai_foundry_pe -> ai_hub
-  chat_to_ai_foundry_pe: chat_app -> ai_foundry_pe
-  chat_to_postgres_pe: chat_app -> postgres_pe
-  postgres_pe_to_postgres: postgres_pe -> postgres_db
-  apim_to_mcp: apim -> mcp_apis
-  mcp_to_func: mcp_apis -> function_app
-
-## VALIDATION SUMMARY
-Status: 1 errors, 0 warnings
-
-## RESPONSE SENT TO AGENT
-```
-## Diagram Modified: ai-foundation-architecture.json
-
-**Changes:**
-- Deleted edge 'apim_to_func'
-- Created node 'mcp_apis'
-- Created edge 'apim_to_mcp'
-- Created edge 'mcp_to_func'
-- Auto-resized containers: rg
-
-### Current State (27 nodes, 21 edges)
-
-**Root Nodes:**
-- rg: (-564, -140) [1880x1952]
-
-**Child Nodes (relative → absolute):**
-In rg:
-  - vnet: (90, 417) → abs (-474, 277) [1700x1145]
-  - api_center: (270, 102) → abs (-294, -38)
-  - kv: (270, 1662) → abs (-294, 1522)
-  - storage: (490, 1662) → abs (-74, 1522)
-  - ai_hub: (710, 1662) → abs (146, 1522)
-  - app_insights: (929, 90) → abs (365, -50)
-  - ai_storage: (940, 1662) → abs (376, 1522)
-  - cosmos_db: (1170, 1662) → abs (606, 1522)
-  - log_analytics: (1234, 90) → abs (670, -50)
-  - postgres_db: (1400, 1662) → abs (836, 1522)
-In vnet:
-  - apim_subnet: (90, 180) → abs (-384, 457) [300x330]
-  - private_endpoint_subnet: (90, 725) → abs (-384, 1002) [1430x330]
-  - func_subnet: (531, 90) → abs (57, 367) [480x510]
-  - container_subnet: (1130, 90) → abs (656, 367) [480x510]
-In apim_subnet:
-  - apim: (90, 90) → abs (-294, 547)
-  - mcp_apis: (90, 90) → abs (-294, 547)
-In func_subnet:
-  - app_service_plan: (90, 90) → abs (147, 457) [300x330]
-In app_service_plan:
-  - function_app: (90, 90) → abs (237, 547)
-In container_subnet:
-  - container_env: (90, 90) → abs (746, 457) [300x330]
-In container_env:
-  - chat_app: (90, 90) → abs (836, 547)
-In private_endpoint_subnet:
-  - kv_pe: (90, 90) → abs (-294, 1092)
-  - storage_pe: (310, 90) → abs (-74, 1092)
-  - ai_foundry_pe: (530, 90) → abs (146, 1092)
-  - ai_storage_pe: (760, 90) → abs (376, 1092)
-  - cosmos_pe: (990, 90) → abs (606, 1092)
-  - postgres_pe: (1220, 90) → abs (836, 1092)
-
-**Edges:**
-- api_center_to_apim: api_center → apim "discovers APIs"
-- chat_to_apim: chat_app → apim "consumes MCP APIs"
-- func_to_insights: function_app → app_insights "telemetry"
-- chat_to_insights: chat_app → app_insights "telemetry"
-- insights_to_logs: app_insights → log_analytics "stores logs"
-- func_to_storage_pe: function_app → storage_pe "accesses via PE"
-- func_to_kv_pe: function_app → kv_pe "accesses via PE"
-- apim_to_kv_pe: apim → kv_pe "accesses via PE"
-- ai_hub_to_kv_pe: ai_hub → kv_pe "accesses via PE"
-- ai_hub_to_cosmos_pe: ai_hub → cosmos_pe "accesses via PE"
-- ai_hub_to_ai_storage_pe: ai_hub → ai_storage_pe "accesses via PE"
-- storage_pe_to_storage: storage_pe → storage "private connection"
-- kv_pe_to_kv: kv_pe → kv "private connection"
-- cosmos_pe_to_cosmos: cosmos_pe → cosmos_db "private connection"
-- ai_storage_pe_to_ai_storage: ai_storage_pe → ai_storage "private connection"
-- ai_foundry_pe_to_ai_hub: ai_foundry_pe → ai_hub "private connection"
-- chat_to_ai_foundry_pe: chat_app → ai_foundry_pe "accesses via PE"
-- chat_to_postgres_pe: chat_app → postgres_pe "database queries"
-- postgres_pe_to_postgres: postgres_pe → postgres_db "private connection"
-- apim_to_mcp: apim → mcp_apis "hosts"
-- mcp_to_func: mcp_apis → function_app "backend calls"
-
-### Errors
-- 'apim' overlaps 'mcp_apis'. Move 'mcp_apis' to x=310 (right of 'apim')
-
----
-**1 error** — fix errors first
-
-**Look at the diagram image above.** Each error message tells you exactly where to move the node. Follow those suggestions to fix all errors in one call.
-
-
-✓ Saved to 'ai-foundation-architecture.json' (1 issue to fix)
-```
-
-============================================================
-[2026-01-29T03:59:15.266Z] modify_diagram
-
-## AGENT REASONING
-Moving MCP APIs to the right of APIM to fix the overlap issue
-
-## AGENT INPUT
-{
-  "nodes": [
-    {
-      "id": "mcp_apis",
-      "x": 310
-    }
-  ]
-}
-
-## CURRENT STATE
-Nodes (27):
-  rg: rel(-564, -140) abs(-564, -140) [1880x1952]
-  vnet: rel(90, 417) abs(-474, 277) [1700x1145] parent=rg
-  apim_subnet: rel(90, 180) abs(-384, 457) [520x330] parent=vnet
-  apim: rel(90, 90) abs(-294, 547) [120x150] parent=apim_subnet
-  func_subnet: rel(531, 90) abs(57, 367) [480x510] parent=vnet
-  app_service_plan: rel(90, 90) abs(147, 457) [300x330] parent=func_subnet
-  function_app: rel(90, 90) abs(237, 547) [120x150] parent=app_service_plan
-  container_subnet: rel(1130, 90) abs(656, 367) [480x510] parent=vnet
-  container_env: rel(90, 90) abs(746, 457) [300x330] parent=container_subnet
-  chat_app: rel(90, 90) abs(836, 547) [120x150] parent=container_env
-  private_endpoint_subnet: rel(90, 725) abs(-384, 1002) [1430x330] parent=vnet
-  kv_pe: rel(90, 90) abs(-294, 1092) [120x150] parent=private_endpoint_subnet
-  storage_pe: rel(310, 90) abs(-74, 1092) [120x150] parent=private_endpoint_subnet
-  ai_storage_pe: rel(760, 90) abs(376, 1092) [120x150] parent=private_endpoint_subnet
-  cosmos_pe: rel(990, 90) abs(606, 1092) [120x150] parent=private_endpoint_subnet
-  ai_foundry_pe: rel(530, 90) abs(146, 1092) [120x150] parent=private_endpoint_subnet
-  postgres_pe: rel(1220, 90) abs(836, 1092) [120x150] parent=private_endpoint_subnet
-  kv: rel(270, 1662) abs(-294, 1522) [120x150] parent=rg
-  storage: rel(490, 1662) abs(-74, 1522) [120x150] parent=rg
-  ai_hub: rel(710, 1662) abs(146, 1522) [120x150] parent=rg
-  api_center: rel(270, 102) abs(-294, -38) [120x150] parent=rg
-  app_insights: rel(929, 90) abs(365, -50) [120x150] parent=rg
-  log_analytics: rel(1234, 90) abs(670, -50) [120x150] parent=rg
-  cosmos_db: rel(1170, 1662) abs(606, 1522) [120x150] parent=rg
-  ai_storage: rel(940, 1662) abs(376, 1522) [120x150] parent=rg
-  postgres_db: rel(1400, 1662) abs(836, 1522) [120x150] parent=rg
-  mcp_apis: rel(310, 90) abs(-74, 547) [120x150] parent=apim_subnet
-
-Edges (21):
-  api_center_to_apim: api_center -> apim
-  chat_to_apim: chat_app -> apim
-  func_to_insights: function_app -> app_insights
-  chat_to_insights: chat_app -> app_insights
-  insights_to_logs: app_insights -> log_analytics
-  func_to_storage_pe: function_app -> storage_pe
-  func_to_kv_pe: function_app -> kv_pe
-  apim_to_kv_pe: apim -> kv_pe
-  ai_hub_to_kv_pe: ai_hub -> kv_pe
-  ai_hub_to_cosmos_pe: ai_hub -> cosmos_pe
-  ai_hub_to_ai_storage_pe: ai_hub -> ai_storage_pe
-  storage_pe_to_storage: storage_pe -> storage
-  kv_pe_to_kv: kv_pe -> kv
-  cosmos_pe_to_cosmos: cosmos_pe -> cosmos_db
-  ai_storage_pe_to_ai_storage: ai_storage_pe -> ai_storage
-  ai_foundry_pe_to_ai_hub: ai_foundry_pe -> ai_hub
-  chat_to_ai_foundry_pe: chat_app -> ai_foundry_pe
-  chat_to_postgres_pe: chat_app -> postgres_pe
-  postgres_pe_to_postgres: postgres_pe -> postgres_db
-  apim_to_mcp: apim -> mcp_apis
-  mcp_to_func: mcp_apis -> function_app
-
-## VALIDATION SUMMARY
-Status: 1 errors, 0 warnings
-
-## RESPONSE SENT TO AGENT
-```
-## Diagram Modified: ai-foundation-architecture.json
-
-**Changes:**
-- Updated node 'mcp_apis'
-- Auto-resized containers: apim_subnet
-- **Alignment check needed**: Container resize may have shifted internal nodes. Verify alignment with external nodes: 'api_center', 'chat_app', 'kv_pe', 'function_app'
-
-### Current State (27 nodes, 21 edges)
-
-**Root Nodes:**
-- rg: (-564, -140) [1880x1952]
-
-**Child Nodes (relative → absolute):**
-In rg:
-  - vnet: (90, 417) → abs (-474, 277) [1700x1145]
-  - api_center: (270, 102) → abs (-294, -38)
-  - kv: (270, 1662) → abs (-294, 1522)
-  - storage: (490, 1662) → abs (-74, 1522)
-  - ai_hub: (710, 1662) → abs (146, 1522)
-  - app_insights: (929, 90) → abs (365, -50)
-  - ai_storage: (940, 1662) → abs (376, 1522)
-  - cosmos_db: (1170, 1662) → abs (606, 1522)
-  - log_analytics: (1234, 90) → abs (670, -50)
-  - postgres_db: (1400, 1662) → abs (836, 1522)
-In vnet:
-  - apim_subnet: (90, 180) → abs (-384, 457) [520x330]
-  - private_endpoint_subnet: (90, 725) → abs (-384, 1002) [1430x330]
-  - func_subnet: (531, 90) → abs (57, 367) [480x510]
-  - container_subnet: (1130, 90) → abs (656, 367) [480x510]
-In apim_subnet:
-  - apim: (90, 90) → abs (-294, 547)
-  - mcp_apis: (310, 90) → abs (-74, 547)
-In func_subnet:
-  - app_service_plan: (90, 90) → abs (147, 457) [300x330]
-In app_service_plan:
-  - function_app: (90, 90) → abs (237, 547)
-In container_subnet:
-  - container_env: (90, 90) → abs (746, 457) [300x330]
-In container_env:
-  - chat_app: (90, 90) → abs (836, 547)
-In private_endpoint_subnet:
-  - kv_pe: (90, 90) → abs (-294, 1092)
-  - storage_pe: (310, 90) → abs (-74, 1092)
-  - ai_foundry_pe: (530, 90) → abs (146, 1092)
-  - ai_storage_pe: (760, 90) → abs (376, 1092)
-  - cosmos_pe: (990, 90) → abs (606, 1092)
-  - postgres_pe: (1220, 90) → abs (836, 1092)
-
-**Edges:**
-- api_center_to_apim: api_center → apim "discovers APIs"
-- chat_to_apim: chat_app → apim "consumes MCP APIs"
-- func_to_insights: function_app → app_insights "telemetry"
-- chat_to_insights: chat_app → app_insights "telemetry"
-- insights_to_logs: app_insights → log_analytics "stores logs"
-- func_to_storage_pe: function_app → storage_pe "accesses via PE"
-- func_to_kv_pe: function_app → kv_pe "accesses via PE"
-- apim_to_kv_pe: apim → kv_pe "accesses via PE"
-- ai_hub_to_kv_pe: ai_hub → kv_pe "accesses via PE"
-- ai_hub_to_cosmos_pe: ai_hub → cosmos_pe "accesses via PE"
-- ai_hub_to_ai_storage_pe: ai_hub → ai_storage_pe "accesses via PE"
-- storage_pe_to_storage: storage_pe → storage "private connection"
-- kv_pe_to_kv: kv_pe → kv "private connection"
-- cosmos_pe_to_cosmos: cosmos_pe → cosmos_db "private connection"
-- ai_storage_pe_to_ai_storage: ai_storage_pe → ai_storage "private connection"
-- ai_foundry_pe_to_ai_hub: ai_foundry_pe → ai_hub "private connection"
-- chat_to_ai_foundry_pe: chat_app → ai_foundry_pe "accesses via PE"
-- chat_to_postgres_pe: chat_app → postgres_pe "database queries"
-- postgres_pe_to_postgres: postgres_pe → postgres_db "private connection"
-- apim_to_mcp: apim → mcp_apis "hosts"
-- mcp_to_func: mcp_apis → function_app "backend calls"
-
-### Errors
-- 'apim_subnet' overlaps 'func_subnet'. Move 'func_subnet' to x=710 (right of 'apim_subnet')
-
----
-**1 error** — fix errors first
-
-**Look at the diagram image above.** Each error message tells you exactly where to move the node. Follow those suggestions to fix all errors in one call.
-
-
-✓ Saved to 'ai-foundation-architecture.json' (1 issue to fix)
-```
-
-============================================================
-[2026-01-29T03:59:21.619Z] modify_diagram
-
-## AGENT REASONING
-Moving compute subnet to the right to fix overlap with expanded APIM subnet that now contains both APIM and MCP APIs
-
-## AGENT INPUT
-{
-  "nodes": [
-    {
-      "id": "func_subnet",
-      "x": 710
-    }
-  ]
-}
-
-## CURRENT STATE
-Nodes (27):
-  rg: rel(-654, -140) abs(-654, -140) [1970x1952]
-  vnet: rel(90, 417) abs(-564, 277) [1790x1145] parent=rg
+  rg: rel(-654, -140) abs(-654, -140) [2018x1952]
+  vnet: rel(90, 417) abs(-564, 277) [1838x1145] parent=rg
   apim_subnet: rel(90, 90) abs(-474, 367) [480x510] parent=vnet
   apim: rel(90, 90) abs(-384, 457) [300x330] parent=apim_subnet
   mcp_apis: rel(90, 90) abs(-294, 547) [120x150] parent=apim
-  func_subnet: rel(710, 90) abs(146, 367) [480x510] parent=vnet
-  app_service_plan: rel(90, 90) abs(236, 457) [300x330] parent=func_subnet
-  function_app: rel(90, 90) abs(326, 547) [120x150] parent=app_service_plan
-  container_subnet: rel(1220, 90) abs(656, 367) [480x510] parent=vnet
-  container_env: rel(90, 90) abs(746, 457) [300x330] parent=container_subnet
-  chat_app: rel(90, 90) abs(836, 547) [120x150] parent=container_env
+  func_subnet: rel(676, 90) abs(112, 367) [480x510] parent=vnet
+  app_service_plan: rel(90, 90) abs(202, 457) [300x330] parent=func_subnet
+  function_app: rel(90, 90) abs(292, 547) [120x150] parent=app_service_plan
+  container_subnet: rel(1268, 90) abs(704, 367) [480x510] parent=vnet
+  container_env: rel(90, 90) abs(794, 457) [300x330] parent=container_subnet
+  chat_app: rel(90, 90) abs(884, 547) [120x150] parent=container_env
   private_endpoint_subnet: rel(180, 725) abs(-384, 1002) [1430x330] parent=vnet
   kv_pe: rel(90, 90) abs(-294, 1092) [120x150] parent=private_endpoint_subnet
   storage_pe: rel(310, 90) abs(-74, 1092) [120x150] parent=private_endpoint_subnet
@@ -381,7 +53,6 @@ Nodes (27):
 
 Edges (21):
   api_center_to_apim: api_center -> apim
-  chat_to_apim: chat_app -> apim
   func_to_insights: function_app -> app_insights
   chat_to_insights: chat_app -> app_insights
   insights_to_logs: app_insights -> log_analytics
@@ -401,163 +72,7 @@ Edges (21):
   postgres_pe_to_postgres: postgres_pe -> postgres_db
   apim_to_mcp: apim -> mcp_apis
   mcp_to_func: mcp_apis -> function_app
-
-## VALIDATION SUMMARY
-Status: 1 errors, 0 warnings
-
-## RESPONSE SENT TO AGENT
-```
-## Diagram Modified: ai-foundation-architecture.json
-
-**Changes:**
-- Updated node 'func_subnet'
-- Auto-resized containers: rg
-
-### Current State (27 nodes, 21 edges)
-
-**Root Nodes:**
-- rg: (-654, -140) [1970x1952]
-
-**Child Nodes (relative → absolute):**
-In rg:
-  - vnet: (90, 417) → abs (-564, 277) [1790x1145]
-  - api_center: (360, 102) → abs (-294, -38)
-  - kv: (360, 1662) → abs (-294, 1522)
-  - storage: (580, 1662) → abs (-74, 1522)
-  - ai_hub: (800, 1662) → abs (146, 1522)
-  - app_insights: (1019, 90) → abs (365, -50)
-  - ai_storage: (1030, 1662) → abs (376, 1522)
-  - cosmos_db: (1260, 1662) → abs (606, 1522)
-  - log_analytics: (1324, 90) → abs (670, -50)
-  - postgres_db: (1490, 1662) → abs (836, 1522)
-In vnet:
-  - apim_subnet: (90, 90) → abs (-474, 367) [480x510]
-  - private_endpoint_subnet: (180, 725) → abs (-384, 1002) [1430x330]
-  - func_subnet: (710, 90) → abs (146, 367) [480x510]
-  - container_subnet: (1220, 90) → abs (656, 367) [480x510]
-In apim_subnet:
-  - apim: (90, 90) → abs (-384, 457) [300x330]
-In apim:
-  - mcp_apis: (90, 90) → abs (-294, 547)
-In func_subnet:
-  - app_service_plan: (90, 90) → abs (236, 457) [300x330]
-In app_service_plan:
-  - function_app: (90, 90) → abs (326, 547)
-In container_subnet:
-  - container_env: (90, 90) → abs (746, 457) [300x330]
-In container_env:
-  - chat_app: (90, 90) → abs (836, 547)
-In private_endpoint_subnet:
-  - kv_pe: (90, 90) → abs (-294, 1092)
-  - storage_pe: (310, 90) → abs (-74, 1092)
-  - ai_foundry_pe: (530, 90) → abs (146, 1092)
-  - ai_storage_pe: (760, 90) → abs (376, 1092)
-  - cosmos_pe: (990, 90) → abs (606, 1092)
-  - postgres_pe: (1220, 90) → abs (836, 1092)
-
-**Edges:**
-- api_center_to_apim: api_center → apim "discovers APIs"
-- chat_to_apim: chat_app → apim "consumes MCP APIs"
-- func_to_insights: function_app → app_insights "telemetry"
-- chat_to_insights: chat_app → app_insights "telemetry"
-- insights_to_logs: app_insights → log_analytics "stores logs"
-- func_to_storage_pe: function_app → storage_pe "accesses via PE"
-- func_to_kv_pe: function_app → kv_pe "accesses via PE"
-- apim_to_kv_pe: apim → kv_pe "accesses via PE"
-- ai_hub_to_kv_pe: ai_hub → kv_pe "accesses via PE"
-- ai_hub_to_cosmos_pe: ai_hub → cosmos_pe "accesses via PE"
-- ai_hub_to_ai_storage_pe: ai_hub → ai_storage_pe "accesses via PE"
-- storage_pe_to_storage: storage_pe → storage "private connection"
-- kv_pe_to_kv: kv_pe → kv "private connection"
-- cosmos_pe_to_cosmos: cosmos_pe → cosmos_db "private connection"
-- ai_storage_pe_to_ai_storage: ai_storage_pe → ai_storage "private connection"
-- ai_foundry_pe_to_ai_hub: ai_foundry_pe → ai_hub "private connection"
-- chat_to_ai_foundry_pe: chat_app → ai_foundry_pe "accesses via PE"
-- chat_to_postgres_pe: chat_app → postgres_pe "database queries"
-- postgres_pe_to_postgres: postgres_pe → postgres_db "private connection"
-- apim_to_mcp: apim → mcp_apis "hosts"
-- mcp_to_func: mcp_apis → function_app "backend calls"
-
-### Errors
-- 'func_subnet' and 'container_subnet' are only 30px apart (need 100px). Move 'container_subnet' to x=1290 (+70px right)
-
----
-**1 error** — fix errors first
-
-**Look at the diagram image above.** Each error message tells you exactly where to move the node. Follow those suggestions to fix all errors in one call.
-
-
-✓ Saved to 'ai-foundation-architecture.json' (1 issue to fix)
-```
-
-============================================================
-[2026-01-29T03:59:27.394Z] modify_diagram
-
-## AGENT REASONING
-Moving container subnet to the right to ensure proper spacing between compute and container subnets
-
-## AGENT INPUT
-{
-  "nodes": [
-    {
-      "id": "container_subnet",
-      "x": 1290
-    }
-  ]
-}
-
-## CURRENT STATE
-Nodes (27):
-  rg: rel(-654, -140) abs(-654, -140) [2040x1952]
-  vnet: rel(90, 417) abs(-564, 277) [1860x1145] parent=rg
-  apim_subnet: rel(90, 90) abs(-474, 367) [480x510] parent=vnet
-  apim: rel(90, 90) abs(-384, 457) [300x330] parent=apim_subnet
-  mcp_apis: rel(90, 90) abs(-294, 547) [120x150] parent=apim
-  func_subnet: rel(710, 90) abs(146, 367) [480x510] parent=vnet
-  app_service_plan: rel(90, 90) abs(236, 457) [300x330] parent=func_subnet
-  function_app: rel(90, 90) abs(326, 547) [120x150] parent=app_service_plan
-  container_subnet: rel(1290, 90) abs(726, 367) [480x510] parent=vnet
-  container_env: rel(90, 90) abs(816, 457) [300x330] parent=container_subnet
-  chat_app: rel(90, 90) abs(906, 547) [120x150] parent=container_env
-  private_endpoint_subnet: rel(180, 725) abs(-384, 1002) [1430x330] parent=vnet
-  kv_pe: rel(90, 90) abs(-294, 1092) [120x150] parent=private_endpoint_subnet
-  storage_pe: rel(310, 90) abs(-74, 1092) [120x150] parent=private_endpoint_subnet
-  ai_storage_pe: rel(760, 90) abs(376, 1092) [120x150] parent=private_endpoint_subnet
-  cosmos_pe: rel(990, 90) abs(606, 1092) [120x150] parent=private_endpoint_subnet
-  ai_foundry_pe: rel(530, 90) abs(146, 1092) [120x150] parent=private_endpoint_subnet
-  postgres_pe: rel(1220, 90) abs(836, 1092) [120x150] parent=private_endpoint_subnet
-  kv: rel(360, 1662) abs(-294, 1522) [120x150] parent=rg
-  storage: rel(580, 1662) abs(-74, 1522) [120x150] parent=rg
-  ai_hub: rel(800, 1662) abs(146, 1522) [120x150] parent=rg
-  api_center: rel(360, 102) abs(-294, -38) [120x150] parent=rg
-  app_insights: rel(1019, 90) abs(365, -50) [120x150] parent=rg
-  log_analytics: rel(1324, 90) abs(670, -50) [120x150] parent=rg
-  cosmos_db: rel(1260, 1662) abs(606, 1522) [120x150] parent=rg
-  ai_storage: rel(1030, 1662) abs(376, 1522) [120x150] parent=rg
-  postgres_db: rel(1490, 1662) abs(836, 1522) [120x150] parent=rg
-
-Edges (21):
-  api_center_to_apim: api_center -> apim
-  chat_to_apim: chat_app -> apim
-  func_to_insights: function_app -> app_insights
-  chat_to_insights: chat_app -> app_insights
-  insights_to_logs: app_insights -> log_analytics
-  func_to_storage_pe: function_app -> storage_pe
-  func_to_kv_pe: function_app -> kv_pe
-  apim_to_kv_pe: apim -> kv_pe
-  ai_hub_to_kv_pe: ai_hub -> kv_pe
-  ai_hub_to_cosmos_pe: ai_hub -> cosmos_pe
-  ai_hub_to_ai_storage_pe: ai_hub -> ai_storage_pe
-  storage_pe_to_storage: storage_pe -> storage
-  kv_pe_to_kv: kv_pe -> kv
-  cosmos_pe_to_cosmos: cosmos_pe -> cosmos_db
-  ai_storage_pe_to_ai_storage: ai_storage_pe -> ai_storage
-  ai_foundry_pe_to_ai_hub: ai_foundry_pe -> ai_hub
-  chat_to_ai_foundry_pe: chat_app -> ai_foundry_pe
-  chat_to_postgres_pe: chat_app -> postgres_pe
-  postgres_pe_to_postgres: postgres_pe -> postgres_db
-  apim_to_mcp: apim -> mcp_apis
-  mcp_to_func: mcp_apis -> function_app
+  chat_to_mcp: chat_app -> mcp_apis
 
 ## VALIDATION SUMMARY
 Status: 0 errors, 0 warnings
@@ -567,17 +82,18 @@ Status: 0 errors, 0 warnings
 ## Diagram Modified: ai-foundation-architecture.json
 
 **Changes:**
-- Updated node 'container_subnet'
-- Auto-resized containers: vnet, rg
+- Deleted edge 'chat_to_apim'
+- Created edge 'chat_to_mcp'
+- Auto-resized containers: rg
 
 ### Current State (27 nodes, 21 edges)
 
 **Root Nodes:**
-- rg: (-654, -140) [2040x1952]
+- rg: (-654, -140) [2018x1952]
 
 **Child Nodes (relative → absolute):**
 In rg:
-  - vnet: (90, 417) → abs (-564, 277) [1860x1145]
+  - vnet: (90, 417) → abs (-564, 277) [1838x1145]
   - api_center: (360, 102) → abs (-294, -38)
   - kv: (360, 1662) → abs (-294, 1522)
   - storage: (580, 1662) → abs (-74, 1522)
@@ -590,20 +106,20 @@ In rg:
 In vnet:
   - apim_subnet: (90, 90) → abs (-474, 367) [480x510]
   - private_endpoint_subnet: (180, 725) → abs (-384, 1002) [1430x330]
-  - func_subnet: (710, 90) → abs (146, 367) [480x510]
-  - container_subnet: (1290, 90) → abs (726, 367) [480x510]
+  - func_subnet: (676, 90) → abs (112, 367) [480x510]
+  - container_subnet: (1268, 90) → abs (704, 367) [480x510]
 In apim_subnet:
   - apim: (90, 90) → abs (-384, 457) [300x330]
 In apim:
   - mcp_apis: (90, 90) → abs (-294, 547)
 In func_subnet:
-  - app_service_plan: (90, 90) → abs (236, 457) [300x330]
+  - app_service_plan: (90, 90) → abs (202, 457) [300x330]
 In app_service_plan:
-  - function_app: (90, 90) → abs (326, 547)
+  - function_app: (90, 90) → abs (292, 547)
 In container_subnet:
-  - container_env: (90, 90) → abs (816, 457) [300x330]
+  - container_env: (90, 90) → abs (794, 457) [300x330]
 In container_env:
-  - chat_app: (90, 90) → abs (906, 547)
+  - chat_app: (90, 90) → abs (884, 547)
 In private_endpoint_subnet:
   - kv_pe: (90, 90) → abs (-294, 1092)
   - storage_pe: (310, 90) → abs (-74, 1092)
@@ -614,7 +130,6 @@ In private_endpoint_subnet:
 
 **Edges:**
 - api_center_to_apim: api_center → apim "discovers APIs"
-- chat_to_apim: chat_app → apim "consumes MCP APIs"
 - func_to_insights: function_app → app_insights "telemetry"
 - chat_to_insights: chat_app → app_insights "telemetry"
 - insights_to_logs: app_insights → log_analytics "stores logs"
@@ -634,6 +149,7 @@ In private_endpoint_subnet:
 - postgres_pe_to_postgres: postgres_pe → postgres_db "private connection"
 - apim_to_mcp: apim → mcp_apis "hosts"
 - mcp_to_func: mcp_apis → function_app "backend calls"
+- chat_to_mcp: chat_app → mcp_apis "consumes MCP APIs"
 
 ---
 **Layout valid** — no errors

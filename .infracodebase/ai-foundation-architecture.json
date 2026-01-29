@@ -9,8 +9,8 @@
       "type": "container",
       "x": -654,
       "y": -140,
-      "width": 2020,
-      "height": 1902
+      "width": 2018,
+      "height": 1952
     },
     {
       "id": "vnet",
@@ -20,7 +20,7 @@
       "type": "container",
       "x": 90,
       "y": 417,
-      "width": 1840,
+      "width": 1838,
       "height": 1145,
       "parentId": "rg"
     },
@@ -107,11 +107,11 @@
     {
       "id": "container_subnet",
       "label": "Container Subnet",
-      "x": 1270,
-      "y": 90,
       "subtitle": "10.0.3.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
+      "x": 1268,
+      "y": 90,
       "width": 480,
       "height": 510,
       "parentId": "vnet",
@@ -301,12 +301,6 @@
       "label": "discovers APIs"
     },
     {
-      "id": "chat_to_apim",
-      "source": "chat_app",
-      "target": "apim",
-      "label": "consumes MCP APIs"
-    },
-    {
       "id": "func_to_insights",
       "source": "function_app",
       "target": "app_insights",
@@ -420,6 +414,12 @@
       "source": "mcp_apis",
       "target": "function_app",
       "label": "backend calls"
+    },
+    {
+      "id": "chat_to_mcp",
+      "source": "chat_app",
+      "target": "mcp_apis",
+      "label": "consumes MCP APIs"
     }
   ]
 }
