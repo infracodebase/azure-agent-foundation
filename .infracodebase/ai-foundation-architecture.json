@@ -7,8 +7,8 @@
       "subtitle": "Production Environment",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/subscription.png",
       "type": "container",
-      "x": 5,
-      "y": 3,
+      "x": 91,
+      "y": 99,
       "width": 2180,
       "height": 1986
     },
@@ -119,11 +119,11 @@
     {
       "id": "container_subnet",
       "label": "Container Subnet",
-      "x": 1250,
-      "y": 90,
       "subtitle": "10.0.3.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
+      "x": 1250,
+      "y": 90,
       "width": 480,
       "height": 510,
       "parentId": "vnet",
@@ -195,7 +195,7 @@
       "id": "ai_storage_pe",
       "label": "AI Storage PE",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 760,
+      "x": 775,
       "y": 90,
       "parentId": "private_endpoint_subnet"
     },
@@ -203,7 +203,7 @@
       "id": "cosmos_pe",
       "label": "Cosmos PE",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 990,
+      "x": 1020,
       "y": 90,
       "parentId": "private_endpoint_subnet"
     },
@@ -226,28 +226,28 @@
     {
       "id": "kv",
       "label": "Key Vault",
-      "x": 360,
-      "y": 1566,
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
+      "x": 360,
+      "y": 1566,
       "parentId": "rg"
     },
     {
       "id": "storage",
       "label": "Storage Account",
-      "x": 580,
-      "y": 1566,
       "subtitle": "Function App data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
+      "x": 580,
+      "y": 1566,
       "parentId": "rg"
     },
     {
       "id": "ai_hub",
       "label": "Azure AI Foundry",
-      "x": 800,
-      "y": 1566,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
+      "x": 800,
+      "y": 1566,
       "parentId": "rg"
     },
     {
@@ -264,7 +264,7 @@
       "label": "Application Insights",
       "subtitle": "ai-foundation-insights",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/application-insights.png",
-      "x": 1015,
+      "x": 1240,
       "y": 90,
       "parentId": "rg"
     },
@@ -273,36 +273,68 @@
       "label": "Log Analytics Workspace",
       "subtitle": "ai-foundation-logs",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/log-analytics-workspace.png",
-      "x": 1280,
+      "x": 1520,
       "y": 90,
       "parentId": "rg"
     },
     {
       "id": "cosmos_db",
       "label": "Cosmos DB",
-      "x": 1260,
-      "y": 1566,
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
+      "x": 1290,
+      "y": 1566,
       "parentId": "rg"
     },
     {
       "id": "ai_storage",
       "label": "AI Storage",
-      "x": 1030,
-      "y": 1566,
       "subtitle": "Models & training data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
+      "x": 1045,
+      "y": 1566,
       "parentId": "rg"
     },
     {
       "id": "postgres_db",
       "label": "PostgreSQL Database",
-      "x": 1490,
-      "y": 1566,
       "subtitle": "Flexible Server",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-database-for-postgresql.png",
+      "x": 1520,
+      "y": 1566,
       "parentId": "rg"
+    },
+    {
+      "id": "internet",
+      "label": "Internet",
+      "subtitle": "External Access",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/internet-alt1.png",
+      "x": 2911,
+      "y": 350
+    },
+    {
+      "id": "end_users",
+      "label": "End Users",
+      "subtitle": "Chat Interface",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/users.png",
+      "x": 2400,
+      "y": 50
+    },
+    {
+      "id": "developers",
+      "label": "Developers",
+      "subtitle": "MCP Tools",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/devtools/developer-tools.png",
+      "x": 2400,
+      "y": 350
+    },
+    {
+      "id": "ai_developers",
+      "label": "AI Developers",
+      "x": 2225,
+      "y": 2212,
+      "subtitle": "Agent Building",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/devtools/developer-tools.png"
     }
   ],
   "edges": [
@@ -432,6 +464,42 @@
       "source": "chat_app",
       "target": "mcp_apis",
       "label": "consumes MCP APIs"
+    },
+    {
+      "id": "users_to_chat",
+      "source": "end_users",
+      "target": "chat_app",
+      "label": "accesses chat UI"
+    },
+    {
+      "id": "devs_to_api_center",
+      "source": "developers",
+      "target": "api_center",
+      "label": "discovers MCP tools"
+    },
+    {
+      "id": "ai_devs_to_foundry",
+      "source": "ai_developers",
+      "target": "ai_hub",
+      "label": "builds agents"
+    },
+    {
+      "id": "internet_to_users",
+      "source": "internet",
+      "target": "end_users",
+      "label": "external access"
+    },
+    {
+      "id": "internet_to_devs",
+      "source": "internet",
+      "target": "developers",
+      "label": "external access"
+    },
+    {
+      "id": "internet_to_ai_devs",
+      "source": "internet",
+      "target": "ai_developers",
+      "label": "external access"
     }
   ]
 }
