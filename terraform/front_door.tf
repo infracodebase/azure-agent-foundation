@@ -1,5 +1,7 @@
 # Azure Front Door Profile for WAF and CDN capabilities
+# Only deploy in private networking mode for production security
 resource "azurerm_cdn_frontdoor_profile" "this" {
+  count               = var.enable_private_networking ? 1 : 0
   name                = local.front_door_name
   resource_group_name = azurerm_resource_group.this.name
   sku_name            = "Premium_AzureFrontDoor" # Premium tier required for managed rules
@@ -9,9 +11,10 @@ resource "azurerm_cdn_frontdoor_profile" "this" {
 
 # WAF Policy for security rules
 resource "azurerm_cdn_frontdoor_firewall_policy" "this" {
+  count                             = var.enable_private_networking ? 1 : 0
   name                              = "${replace(local.front_door_name, "-", "")}wafpolicy" # Must be alphanumeric
   resource_group_name               = azurerm_resource_group.this.name
-  sku_name                          = azurerm_cdn_frontdoor_profile.this.sku_name
+  sku_name                          = azurerm_cdn_frontdoor_profile.this[0].sku_name
   enabled                           = true
   mode                              = "Prevention"
   redirect_url                      = "https://www.microsoft.com"
@@ -37,17 +40,18 @@ resource "azurerm_cdn_frontdoor_firewall_policy" "this" {
 
 # Security Policy to associate WAF with Front Door
 resource "azurerm_cdn_frontdoor_security_policy" "this" {
+  count                    = var.enable_private_networking ? 1 : 0
   name                     = "${local.front_door_name}-security-policy"
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.this.id
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.this[0].id
 
   security_policies {
     firewall {
-      cdn_frontdoor_firewall_policy_id = azurerm_cdn_frontdoor_firewall_policy.this.id
+      cdn_frontdoor_firewall_policy_id = azurerm_cdn_frontdoor_firewall_policy.this[0].id
 
       association {
         patterns_to_match = ["/*"]
         domain {
-          cdn_frontdoor_domain_id = azurerm_cdn_frontdoor_endpoint.this.id
+          cdn_frontdoor_domain_id = azurerm_cdn_frontdoor_endpoint.this[0].id
         }
       }
     }
@@ -56,16 +60,18 @@ resource "azurerm_cdn_frontdoor_security_policy" "this" {
 
 # Front Door Endpoint
 resource "azurerm_cdn_frontdoor_endpoint" "this" {
+  count                    = var.enable_private_networking ? 1 : 0
   name                     = "${local.front_door_name}-endpoint"
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.this.id
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.this[0].id
 
   tags = local.common_tags
 }
 
 # Origin Group for Container Apps
 resource "azurerm_cdn_frontdoor_origin_group" "container_apps" {
+  count                    = var.enable_private_networking ? 1 : 0
   name                     = "container-apps-origin-group"
-  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.this.id
+  cdn_frontdoor_profile_id = azurerm_cdn_frontdoor_profile.this[0].id
   session_affinity_enabled = false
 
   restore_traffic_time_to_healed_or_new_endpoint_in_minutes = 10
@@ -86,8 +92,9 @@ resource "azurerm_cdn_frontdoor_origin_group" "container_apps" {
 
 # Origin for Container App
 resource "azurerm_cdn_frontdoor_origin" "container_app" {
+  count                         = var.enable_private_networking ? 1 : 0
   name                          = "container-app-origin"
-  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.container_apps.id
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.container_apps[0].id
   enabled                       = true
 
   certificate_name_check_enabled = true
@@ -101,10 +108,11 @@ resource "azurerm_cdn_frontdoor_origin" "container_app" {
 
 # Route for Container Apps traffic
 resource "azurerm_cdn_frontdoor_route" "container_apps" {
+  count                         = var.enable_private_networking ? 1 : 0
   name                          = "container-apps-route"
-  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.this.id
-  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.container_apps.id
-  cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.container_app.id]
+  cdn_frontdoor_endpoint_id     = azurerm_cdn_frontdoor_endpoint.this[0].id
+  cdn_frontdoor_origin_group_id = azurerm_cdn_frontdoor_origin_group.container_apps[0].id
+  cdn_frontdoor_origin_ids      = [azurerm_cdn_frontdoor_origin.container_app[0].id]
 
   patterns_to_match      = ["/*"]
   supported_protocols    = ["Http", "Https"]

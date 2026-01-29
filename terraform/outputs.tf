@@ -76,13 +76,13 @@ output "container_app_url" {
 }
 
 output "front_door_endpoint_url" {
-  description = "Azure Front Door endpoint URL for secure external access"
-  value       = "https://${azurerm_cdn_frontdoor_endpoint.this.host_name}"
+  description = "Azure Front Door endpoint URL for secure external access (only when private networking is enabled)"
+  value       = var.enable_private_networking ? "https://${azurerm_cdn_frontdoor_endpoint.this[0].host_name}" : null
 }
 
 output "front_door_name" {
-  description = "Name of the Azure Front Door profile"
-  value       = azurerm_cdn_frontdoor_profile.this.name
+  description = "Name of the Azure Front Door profile (only when private networking is enabled)"
+  value       = var.enable_private_networking ? azurerm_cdn_frontdoor_profile.this[0].name : null
 }
 
 output "virtual_network_name" {
