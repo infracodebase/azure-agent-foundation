@@ -7,9 +7,6 @@ resource "azurerm_cosmosdb_account" "ai_foundry" {
   offer_type          = "Standard"
   kind                = "GlobalDocumentDB"
 
-  # Required minimum throughput for AI Agent Service
-  enable_automatic_failover = false
-
   consistency_policy {
     consistency_level       = "BoundedStaleness"
     max_interval_in_seconds = 300
@@ -24,7 +21,6 @@ resource "azurerm_cosmosdb_account" "ai_foundry" {
   # Security configurations
   public_network_access_enabled      = true  # Can be restricted based on requirements
   is_virtual_network_filter_enabled  = false
-  enable_free_tier                    = false
 
   tags = local.common_tags
 }
@@ -46,7 +42,7 @@ resource "azurerm_cosmosdb_sql_container" "thread_message_store" {
   resource_group_name   = azurerm_resource_group.this.name
   account_name          = azurerm_cosmosdb_account.ai_foundry.name
   database_name         = azurerm_cosmosdb_sql_database.enterprise_memory.name
-  partition_key_path    = "/id"
+  partition_key_paths   = ["/id"]
   partition_key_version = 1
 
   indexing_policy {
@@ -64,7 +60,7 @@ resource "azurerm_cosmosdb_sql_container" "system_thread_message_store" {
   resource_group_name   = azurerm_resource_group.this.name
   account_name          = azurerm_cosmosdb_account.ai_foundry.name
   database_name         = azurerm_cosmosdb_sql_database.enterprise_memory.name
-  partition_key_path    = "/id"
+  partition_key_paths   = ["/id"]
   partition_key_version = 1
 
   indexing_policy {
@@ -82,7 +78,7 @@ resource "azurerm_cosmosdb_sql_container" "agent_entity_store" {
   resource_group_name   = azurerm_resource_group.this.name
   account_name          = azurerm_cosmosdb_account.ai_foundry.name
   database_name         = azurerm_cosmosdb_sql_database.enterprise_memory.name
-  partition_key_path    = "/id"
+  partition_key_paths   = ["/id"]
   partition_key_version = 1
 
   indexing_policy {
@@ -106,7 +102,7 @@ resource "azurerm_role_assignment" "ai_project_cosmos_access" {
 # Create Cosmos DB connection in AI Foundry project using AzAPI
 # This is the special connection that enables BYO Thread Storage
 resource "azapi_resource" "cosmos_db_connection" {
-  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2024-06-01"
+  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview"
   name      = "cosmos-db-connection"
   parent_id = azapi_resource.ai_foundry_project.id
 
@@ -128,6 +124,4 @@ resource "azapi_resource" "cosmos_db_connection" {
     azapi_resource.ai_foundry_project,
     azurerm_role_assignment.ai_project_cosmos_access
   ]
-
-  tags = local.common_tags
 }

@@ -36,7 +36,7 @@ resource "azurerm_role_assignment" "ai_hub_storage_access" {
 # Create Storage connection in AI Foundry project using AzAPI
 # This enables integration with Azure AI Search for RAG scenarios
 resource "azapi_resource" "storage_connection" {
-  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2024-06-01"
+  type      = "Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview"
   name      = "storage-connection"
   parent_id = azapi_resource.ai_foundry_project.id
 
@@ -56,8 +56,6 @@ resource "azapi_resource" "storage_connection" {
     azapi_resource.ai_foundry_project,
     azurerm_role_assignment.ai_hub_storage_access
   ]
-
-  tags = local.common_tags
 }
 
 # Grant Azure AI User role to current user principal for agents access
