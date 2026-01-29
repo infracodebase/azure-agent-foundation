@@ -7,9 +7,9 @@
       "subtitle": "ai-foundation-dev-rg",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/resource-group.png",
       "type": "container",
-      "x": -564,
+      "x": -654,
       "y": -140,
-      "width": 1880,
+      "width": 2020,
       "height": 1902
     },
     {
@@ -20,7 +20,7 @@
       "type": "container",
       "x": 90,
       "y": 417,
-      "width": 1700,
+      "width": 1840,
       "height": 1145,
       "parentId": "rg"
     },
@@ -31,9 +31,9 @@
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
       "x": 90,
-      "y": 180,
-      "width": 300,
-      "height": 330,
+      "y": 90,
+      "width": 480,
+      "height": 510,
       "parentId": "vnet",
       "decorators": [
         {
@@ -48,9 +48,21 @@
       "label": "API Management",
       "subtitle": "ai-foundation-dev-apim",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/api-management.png",
+      "type": "container",
       "x": 90,
       "y": 90,
+      "width": 300,
+      "height": 330,
       "parentId": "apim_subnet"
+    },
+    {
+      "id": "mcp_apis",
+      "label": "MCP APIs",
+      "subtitle": "Model Context Protocol",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/api-management-api.png",
+      "x": 90,
+      "y": 90,
+      "parentId": "apim"
     },
     {
       "id": "func_subnet",
@@ -58,7 +70,7 @@
       "subtitle": "Function Apps",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "x": 531,
+      "x": 676,
       "y": 90,
       "width": 480,
       "height": 510,
@@ -95,11 +107,11 @@
     {
       "id": "container_subnet",
       "label": "Container Subnet",
+      "x": 1270,
+      "y": 90,
       "subtitle": "10.0.3.0/24",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/virtual-network.png",
       "type": "container",
-      "x": 1130,
-      "y": 90,
       "width": 480,
       "height": 510,
       "parentId": "vnet",
@@ -138,7 +150,7 @@
       "subtitle": "Secure connectivity",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/networking.png",
       "type": "container",
-      "x": 90,
+      "x": 180,
       "y": 725,
       "width": 1430,
       "height": 330,
@@ -202,28 +214,28 @@
     {
       "id": "kv",
       "label": "Key Vault",
-      "x": 270,
-      "y": 1662,
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
+      "x": 360,
+      "y": 1662,
       "parentId": "rg"
     },
     {
       "id": "storage",
       "label": "Storage Account",
-      "x": 490,
-      "y": 1662,
       "subtitle": "Function App data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
+      "x": 580,
+      "y": 1662,
       "parentId": "rg"
     },
     {
       "id": "ai_hub",
       "label": "Azure AI Foundry",
-      "x": 710,
-      "y": 1662,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
+      "x": 800,
+      "y": 1662,
       "parentId": "rg"
     },
     {
@@ -231,7 +243,7 @@
       "label": "API Center",
       "subtitle": "ai-foundation-apicenter (AzAPI)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/application/api-center.png",
-      "x": 270,
+      "x": 360,
       "y": 102,
       "parentId": "rg"
     },
@@ -240,7 +252,7 @@
       "label": "Application Insights",
       "subtitle": "ai-foundation-insights",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/application-insights.png",
-      "x": 929,
+      "x": 1019,
       "y": 90,
       "parentId": "rg"
     },
@@ -249,45 +261,39 @@
       "label": "Log Analytics Workspace",
       "subtitle": "ai-foundation-logs",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/log-analytics-workspace.png",
-      "x": 1234,
+      "x": 1324,
       "y": 90,
       "parentId": "rg"
     },
     {
       "id": "cosmos_db",
       "label": "Cosmos DB",
-      "x": 1170,
-      "y": 1662,
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
+      "x": 1260,
+      "y": 1662,
       "parentId": "rg"
     },
     {
       "id": "ai_storage",
       "label": "AI Storage",
-      "x": 940,
-      "y": 1662,
       "subtitle": "Models & training data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
+      "x": 1030,
+      "y": 1662,
       "parentId": "rg"
     },
     {
       "id": "postgres_db",
       "label": "PostgreSQL Database",
-      "x": 1400,
-      "y": 1662,
       "subtitle": "Flexible Server",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-database-for-postgresql.png",
+      "x": 1490,
+      "y": 1662,
       "parentId": "rg"
     }
   ],
   "edges": [
-    {
-      "id": "apim_to_func",
-      "source": "apim",
-      "target": "function_app",
-      "label": "proxies API calls"
-    },
     {
       "id": "api_center_to_apim",
       "source": "api_center",
@@ -401,6 +407,19 @@
       "source": "postgres_pe",
       "target": "postgres_db",
       "label": "private connection"
+    },
+    {
+      "id": "apim_to_mcp",
+      "source": "apim",
+      "target": "mcp_apis",
+      "label": "hosts",
+      "visible": false
+    },
+    {
+      "id": "mcp_to_func",
+      "source": "mcp_apis",
+      "target": "function_app",
+      "label": "backend calls"
     }
   ]
 }
