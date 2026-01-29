@@ -1,40 +1,42 @@
 # Debug Log - ai-foundation-architecture.json
-# New request at 2026-01-29T03:15:17.590Z
+# New request at 2026-01-29T03:32:06.015Z
 ============================================================
 
-[2026-01-29T03:15:17.590Z] modify_diagram
+[2026-01-29T03:32:06.015Z] modify_diagram
 
 ## AGENT REASONING
-Removing the connection between AI Foundry and Storage Account as requested, and fixing spacing errors by moving nodes to proper positions
+Adding Cosmos DB for agent state storage, restoring storage connection to AI Foundry, and fixing spacing issue with storage position
 
 ## AGENT INPUT
 {
   "nodes": [
     {
-      "id": "api_center",
-      "y": 102
-    },
-    {
-      "id": "kv",
-      "y": 1142
-    },
-    {
       "id": "storage",
       "y": 1142
     },
     {
-      "id": "ai_hub",
-      "y": 1142
+      "id": "cosmos_db",
+      "x": 1573,
+      "y": 1347
     }
   ],
-  "deleteEdgeIds": [
-    "ai_hub_to_storage"
+  "edges": [
+    {
+      "id": "ai_hub_to_storage",
+      "source": "ai_hub",
+      "target": "storage"
+    },
+    {
+      "id": "ai_hub_to_cosmos",
+      "source": "ai_hub",
+      "target": "cosmos_db"
+    }
   ]
 }
 
 ## CURRENT STATE
-Nodes (15):
-  rg: rel(-375, -256) abs(-375, -256) [1650x1432]
+Nodes (16):
+  rg: rel(-375, -256) abs(-375, -256) [1650x1637]
   vnet: rel(90, 352) abs(-285, 96) [1470x690] parent=rg
   apim_subnet: rel(90, 180) abs(-195, 276) [300x330] parent=vnet
   func_subnet: rel(493, 180) abs(208, 276) [300x330] parent=vnet
@@ -43,14 +45,15 @@ Nodes (15):
   function_app: rel(90, 90) abs(298, 366) [120x150] parent=func_subnet
   container_env: rel(90, 90) abs(705, 276) [300x330] parent=container_subnet
   chat_app: rel(90, 90) abs(795, 366) [120x150] parent=container_env
-  kv: rel(270, 1142) abs(-105, 886) [120x150] parent=rg
+  kv: rel(270, 1347) abs(-105, 1091) [120x150] parent=rg
   storage: rel(673, 1142) abs(298, 886) [120x150] parent=rg
-  ai_hub: rel(1170, 1142) abs(795, 886) [120x150] parent=rg
+  ai_hub: rel(1170, 1347) abs(795, 1091) [120x150] parent=rg
   api_center: rel(270, 102) abs(-105, -154) [120x150] parent=rg
   app_insights: rel(929, 90) abs(554, -166) [120x150] parent=rg
   log_analytics: rel(1234, 90) abs(859, -166) [120x150] parent=rg
+  cosmos_db: rel(1573, 1347) abs(1573, 1347) [120x150]
 
-Edges (11):
+Edges (13):
   apim_to_func: apim -> function_app
   func_to_storage: function_app -> storage
   func_to_kv: function_app -> kv
@@ -62,6 +65,8 @@ Edges (11):
   func_to_insights: function_app -> app_insights
   chat_to_insights: chat_app -> app_insights
   insights_to_logs: app_insights -> log_analytics
+  ai_hub_to_storage: ai_hub -> storage
+  ai_hub_to_cosmos: ai_hub -> cosmos_db
 
 ## VALIDATION SUMMARY
 Status: 0 errors, 0 warnings
@@ -71,26 +76,27 @@ Status: 0 errors, 0 warnings
 ## Diagram Modified: ai-foundation-architecture.json
 
 **Changes:**
-- Deleted edge 'ai_hub_to_storage'
-- Updated node 'api_center'
-- Updated node 'kv'
 - Updated node 'storage'
-- Updated node 'ai_hub'
+- Created node 'cosmos_db'
+- Created edge 'ai_hub_to_storage'
+- Created edge 'ai_hub_to_cosmos'
 - Auto-resized containers: rg
+- **Alignment check needed**: Container resize may have shifted internal nodes. Verify alignment with external nodes: 'cosmos_db'
 
-### Current State (15 nodes, 11 edges)
+### Current State (16 nodes, 13 edges)
 
 **Root Nodes:**
-- rg: (-375, -256) [1650x1432]
+- rg: (-375, -256) [1650x1637]
+- cosmos_db: (1573, 1347)
 
 **Child Nodes (relative → absolute):**
 In rg:
   - vnet: (90, 352) → abs (-285, 96) [1470x690]
   - api_center: (270, 102) → abs (-105, -154)
-  - kv: (270, 1142) → abs (-105, 886)
+  - kv: (270, 1347) → abs (-105, 1091)
   - storage: (673, 1142) → abs (298, 886)
   - app_insights: (929, 90) → abs (554, -166)
-  - ai_hub: (1170, 1142) → abs (795, 886)
+  - ai_hub: (1170, 1347) → abs (795, 1091)
   - log_analytics: (1234, 90) → abs (859, -166)
 In vnet:
   - apim_subnet: (90, 180) → abs (-195, 276) [300x330]
@@ -117,6 +123,8 @@ In container_env:
 - func_to_insights: function_app → app_insights "telemetry"
 - chat_to_insights: chat_app → app_insights "telemetry"
 - insights_to_logs: app_insights → log_analytics "stores logs"
+- ai_hub_to_storage: ai_hub → storage "stores models/data"
+- ai_hub_to_cosmos: ai_hub → cosmos_db "agent state storage"
 
 ---
 **Layout valid** — no errors
