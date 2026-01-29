@@ -10,7 +10,7 @@
       "x": -564,
       "y": -140,
       "width": 1650,
-      "height": 1737
+      "height": 1956
     },
     {
       "id": "vnet",
@@ -126,7 +126,7 @@
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
       "x": 270,
-      "y": 1497,
+      "y": 1666,
       "parentId": "rg"
     },
     {
@@ -135,16 +135,16 @@
       "subtitle": "Function App data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
       "x": 490,
-      "y": 1497,
+      "y": 1666,
       "parentId": "rg"
     },
     {
       "id": "ai_hub",
       "label": "Azure AI Foundry",
+      "x": 710,
+      "y": 1572,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
-      "x": 710,
-      "y": 1497,
       "parentId": "rg"
     },
     {
@@ -180,16 +180,16 @@
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
       "x": 1170,
-      "y": 1497,
+      "y": 1666,
       "parentId": "rg"
     },
     {
       "id": "ai_storage",
       "label": "AI Storage",
-      "x": 930,
-      "y": 1497,
       "subtitle": "Models & training data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
+      "x": 940,
+      "y": 1666,
       "parentId": "rg"
     },
     {
@@ -224,7 +224,7 @@
       "id": "ai_storage_pe",
       "label": "AI Storage PE",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 749,
+      "x": 760,
       "y": 90,
       "parentId": "private_endpoint_subnet"
     },
@@ -239,9 +239,9 @@
     {
       "id": "ai_foundry_pe",
       "label": "AI Foundry PE",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 529,
+      "x": 530,
       "y": 90,
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
       "parentId": "private_endpoint_subnet"
     }
   ],
@@ -263,12 +263,6 @@
       "source": "chat_app",
       "target": "apim",
       "label": "consumes MCP APIs"
-    },
-    {
-      "id": "chat_to_ai_hub",
-      "source": "chat_app",
-      "target": "ai_hub",
-      "label": "uses declarative agent"
     },
     {
       "id": "func_to_insights",
@@ -353,6 +347,12 @@
       "source": "ai_foundry_pe",
       "target": "ai_hub",
       "label": "private connection"
+    },
+    {
+      "id": "chat_to_ai_foundry_pe",
+      "source": "chat_app",
+      "target": "ai_foundry_pe",
+      "label": "accesses via PE"
     }
   ]
 }
