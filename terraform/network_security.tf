@@ -145,6 +145,54 @@ resource "azurerm_network_security_group" "container" {
   tags = local.common_tags
 }
 
+# NSG for Private Endpoint subnet
+resource "azurerm_network_security_group" "private_endpoint" {
+  name                = "private-endpoint-nsg"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+
+  # Allow inbound from compute subnets to private endpoints
+  security_rule {
+    name                       = "AllowFromCompute"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["443", "5432"]  # HTTPS and PostgreSQL
+    source_address_prefixes    = [local.compute_subnet_prefix, local.container_subnet_prefix, local.apim_subnet_prefix]
+    destination_address_prefix = "*"
+  }
+
+  # Allow inbound from APIM subnet to private endpoints
+  security_rule {
+    name                       = "AllowFromAPIM"
+    priority                   = 110
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "443"
+    source_address_prefix      = local.apim_subnet_prefix
+    destination_address_prefix = "*"
+  }
+
+  # Allow outbound to Azure PaaS services
+  security_rule {
+    name                       = "AllowToAzurePaaS"
+    priority                   = 100
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_ranges    = ["443", "5432"]  # HTTPS and PostgreSQL
+    source_address_prefix      = "*"
+    destination_address_prefix = "AzureCloud"
+  }
+
+  tags = local.common_tags
+}
+
 # Associate NSGs with subnets
 resource "azurerm_subnet_network_security_group_association" "apim" {
   count                     = var.enable_private_networking ? 1 : 0
@@ -160,6 +208,12 @@ resource "azurerm_subnet_network_security_group_association" "compute" {
 
 resource "azurerm_subnet_network_security_group_association" "container" {
   count                     = var.enable_private_networking ? 1 : 0
-  subnet_id                 = azurerm_subnet.container[0].id
+  subnet_id                 = azurerm_subnet.container_apps[0].id
   network_security_group_id = azurerm_network_security_group.container.id
+}
+
+resource "azurerm_subnet_network_security_group_association" "private_endpoint" {
+  count                     = var.enable_private_networking ? 1 : 0
+  subnet_id                 = azurerm_subnet.private_endpoints[0].id
+  network_security_group_id = azurerm_network_security_group.private_endpoint.id
 }

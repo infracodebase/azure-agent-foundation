@@ -1,36 +1,20 @@
 # Debug Log - ai-foundation-architecture.json
-# New request at 2026-01-29T03:52:52.043Z
+# New request at 2026-01-29T03:54:00.364Z
 ============================================================
 
-[2026-01-29T03:52:52.043Z] modify_diagram
+[2026-01-29T03:54:00.364Z] modify_diagram
 
 ## AGENT REASONING
-Adding PostgreSQL database and its private endpoint to show the complete data architecture. Container App needs database storage separate from the AI Foundry's Cosmos DB.
+Fixing PostgreSQL icons: using private endpoint icon for PE and Azure Database for PostgreSQL icon for the database service
 
 ## AGENT INPUT
 {
   "nodes": [
     {
-      "id": "postgres_db",
-      "x": 1400,
-      "y": 1666
+      "id": "postgres_pe"
     },
     {
-      "id": "postgres_pe",
-      "x": 1220,
-      "y": 90
-    }
-  ],
-  "edges": [
-    {
-      "id": "chat_to_postgres_pe",
-      "source": "chat_app",
-      "target": "postgres_pe"
-    },
-    {
-      "id": "postgres_pe_to_postgres",
-      "source": "postgres_pe",
-      "target": "postgres_db"
+      "id": "postgres_db"
     }
   ]
 }
@@ -46,6 +30,13 @@ Nodes (25):
   container_subnet: rel(900, 90) abs(426, 302) [480x510] parent=vnet
   container_env: rel(90, 90) abs(516, 392) [300x330] parent=container_subnet
   chat_app: rel(90, 90) abs(606, 482) [120x150] parent=container_env
+  private_endpoint_subnet: rel(90, 700) abs(-384, 912) [1430x330] parent=vnet
+  kv_pe: rel(90, 90) abs(-294, 1002) [120x150] parent=private_endpoint_subnet
+  storage_pe: rel(310, 90) abs(-74, 1002) [120x150] parent=private_endpoint_subnet
+  ai_storage_pe: rel(760, 90) abs(376, 1002) [120x150] parent=private_endpoint_subnet
+  cosmos_pe: rel(990, 90) abs(606, 1002) [120x150] parent=private_endpoint_subnet
+  ai_foundry_pe: rel(530, 90) abs(146, 1002) [120x150] parent=private_endpoint_subnet
+  postgres_pe: rel(1220, 90) abs(836, 1002) [120x150] parent=private_endpoint_subnet
   kv: rel(270, 1666) abs(-294, 1526) [120x150] parent=rg
   storage: rel(490, 1666) abs(-74, 1526) [120x150] parent=rg
   ai_hub: rel(710, 1572) abs(146, 1432) [120x150] parent=rg
@@ -54,14 +45,7 @@ Nodes (25):
   log_analytics: rel(1234, 90) abs(670, -50) [120x150] parent=rg
   cosmos_db: rel(1170, 1666) abs(606, 1526) [120x150] parent=rg
   ai_storage: rel(940, 1666) abs(376, 1526) [120x150] parent=rg
-  private_endpoint_subnet: rel(90, 700) abs(-384, 912) [1430x330] parent=vnet
-  kv_pe: rel(90, 90) abs(-294, 1002) [120x150] parent=private_endpoint_subnet
-  storage_pe: rel(310, 90) abs(-74, 1002) [120x150] parent=private_endpoint_subnet
-  ai_storage_pe: rel(760, 90) abs(376, 1002) [120x150] parent=private_endpoint_subnet
-  cosmos_pe: rel(990, 90) abs(606, 1002) [120x150] parent=private_endpoint_subnet
-  ai_foundry_pe: rel(530, 90) abs(146, 1002) [120x150] parent=private_endpoint_subnet
-  postgres_db: rel(1400, 1666) abs(1400, 1666) [120x150]
-  postgres_pe: rel(1220, 90) abs(836, 1002) [120x150] parent=private_endpoint_subnet
+  postgres_db: rel(1400, 1666) abs(836, 1526) [120x150] parent=rg
 
 Edges (20):
   apim_to_func: apim -> function_app
@@ -93,18 +77,14 @@ Status: 0 errors, 0 warnings
 ## Diagram Modified: ai-foundation-architecture.json
 
 **Changes:**
-- Created node 'postgres_db'
-- Created node 'postgres_pe'
-- Created edge 'chat_to_postgres_pe'
-- Created edge 'postgres_pe_to_postgres'
-- Auto-resized containers: private_endpoint_subnet, vnet, rg
-- **Alignment check needed**: Container resize may have shifted internal nodes. Verify alignment with external nodes: 'postgres_db'
+- Updated node 'postgres_pe'
+- Updated node 'postgres_db'
+- Auto-resized containers: rg
 
 ### Current State (25 nodes, 20 edges)
 
 **Root Nodes:**
 - rg: (-564, -140) [1790x1956]
-- postgres_db: (1400, 1666)
 
 **Child Nodes (relative → absolute):**
 In rg:
@@ -117,6 +97,7 @@ In rg:
   - ai_storage: (940, 1666) → abs (376, 1526)
   - cosmos_db: (1170, 1666) → abs (606, 1526)
   - log_analytics: (1234, 90) → abs (670, -50)
+  - postgres_db: (1400, 1666) → abs (836, 1526)
 In vnet:
   - apim_subnet: (90, 180) → abs (-384, 392) [300x330]
   - private_endpoint_subnet: (90, 700) → abs (-384, 912) [1430x330]
