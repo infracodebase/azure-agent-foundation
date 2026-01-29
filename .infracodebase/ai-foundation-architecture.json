@@ -123,28 +123,28 @@
     {
       "id": "kv",
       "label": "Key Vault",
-      "x": 390,
-      "y": 2032,
       "subtitle": "ai-foundation-dev-kv",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/security/key-vault.png",
+      "x": 390,
+      "y": 2032,
       "parentId": "rg"
     },
     {
       "id": "storage",
       "label": "Storage Account",
-      "x": 793,
-      "y": 2032,
       "subtitle": "Function App data",
       "icon": "/icons/azure/storage/storage-account.png",
+      "x": 793,
+      "y": 2032,
       "parentId": "rg"
     },
     {
       "id": "ai_hub",
       "label": "Azure AI Foundry",
-      "x": 1290,
-      "y": 2032,
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
+      "x": 1290,
+      "y": 2032,
       "parentId": "rg"
     },
     {
@@ -186,10 +186,10 @@
     {
       "id": "ai_storage",
       "label": "AI Storage",
-      "x": 1680,
-      "y": 1862,
       "subtitle": "Models & training data",
       "icon": "/icons/azure/storage/storage-account.png",
+      "x": 1680,
+      "y": 1862,
       "parentId": "rg"
     },
     {
@@ -253,24 +253,6 @@
       "label": "proxies API calls"
     },
     {
-      "id": "func_to_storage",
-      "source": "function_app",
-      "target": "storage",
-      "label": "stores data"
-    },
-    {
-      "id": "func_to_kv",
-      "source": "function_app",
-      "target": "kv",
-      "label": "retrieves secrets"
-    },
-    {
-      "id": "apim_to_kv",
-      "source": "apim",
-      "target": "kv",
-      "label": "retrieves API keys"
-    },
-    {
       "id": "api_center_to_apim",
       "source": "api_center",
       "target": "apim",
@@ -287,12 +269,6 @@
       "source": "chat_app",
       "target": "ai_hub",
       "label": "uses declarative agent"
-    },
-    {
-      "id": "ai_hub_to_kv",
-      "source": "ai_hub",
-      "target": "kv",
-      "label": "retrieves secrets"
     },
     {
       "id": "func_to_insights",
@@ -313,16 +289,70 @@
       "label": "stores logs"
     },
     {
-      "id": "ai_hub_to_cosmos",
-      "source": "ai_hub",
-      "target": "cosmos_db",
-      "label": "agent state storage"
+      "id": "func_to_storage_pe",
+      "source": "function_app",
+      "target": "storage_pe",
+      "label": "accesses via PE"
     },
     {
-      "id": "ai_hub_to_ai_storage",
+      "id": "func_to_kv_pe",
+      "source": "function_app",
+      "target": "kv_pe",
+      "label": "accesses via PE"
+    },
+    {
+      "id": "apim_to_kv_pe",
+      "source": "apim",
+      "target": "kv_pe",
+      "label": "accesses via PE"
+    },
+    {
+      "id": "ai_hub_to_kv_pe",
       "source": "ai_hub",
+      "target": "kv_pe",
+      "label": "accesses via PE"
+    },
+    {
+      "id": "ai_hub_to_cosmos_pe",
+      "source": "ai_hub",
+      "target": "cosmos_pe",
+      "label": "accesses via PE"
+    },
+    {
+      "id": "ai_hub_to_ai_storage_pe",
+      "source": "ai_hub",
+      "target": "ai_storage_pe",
+      "label": "accesses via PE"
+    },
+    {
+      "id": "storage_pe_to_storage",
+      "source": "storage_pe",
+      "target": "storage",
+      "label": "private connection"
+    },
+    {
+      "id": "kv_pe_to_kv",
+      "source": "kv_pe",
+      "target": "kv",
+      "label": "private connection"
+    },
+    {
+      "id": "cosmos_pe_to_cosmos",
+      "source": "cosmos_pe",
+      "target": "cosmos_db",
+      "label": "private connection"
+    },
+    {
+      "id": "ai_storage_pe_to_ai_storage",
+      "source": "ai_storage_pe",
       "target": "ai_storage",
-      "label": "AI models & data"
+      "label": "private connection"
+    },
+    {
+      "id": "ai_foundry_pe_to_ai_hub",
+      "source": "ai_foundry_pe",
+      "target": "ai_hub",
+      "label": "private connection"
     }
   ]
 }
