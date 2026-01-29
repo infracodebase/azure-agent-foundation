@@ -7,10 +7,10 @@
       "subtitle": "Production Environment",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/management/subscription.png",
       "type": "container",
-      "x": 91,
-      "y": 99,
-      "width": 2180,
-      "height": 1986
+      "x": -163,
+      "y": 80,
+      "width": 2400,
+      "height": 2036
     },
     {
       "id": "rg",
@@ -20,8 +20,8 @@
       "type": "container",
       "x": 90,
       "y": 90,
-      "width": 2000,
-      "height": 1806,
+      "width": 2220,
+      "height": 1856,
       "parentId": "subscription"
     },
     {
@@ -305,28 +305,37 @@
       "parentId": "rg"
     },
     {
+      "id": "front_door",
+      "label": "Azure Front Door",
+      "subtitle": "WAF + CDN",
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/azure-front-door.png",
+      "x": 2010,
+      "y": 616,
+      "parentId": "rg"
+    },
+    {
       "id": "end_users",
       "label": "End Users",
       "subtitle": "Chat Interface",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/users.png",
-      "x": 2378,
-      "y": 805
+      "x": 2363,
+      "y": 786
     },
     {
       "id": "developers",
       "label": "Developers",
       "subtitle": "MCP Tools",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/devtools/developer-tools.png",
-      "x": 541,
-      "y": -166
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/users.png",
+      "x": 287,
+      "y": -178
     },
     {
       "id": "ai_developers",
       "label": "AI Developers",
-      "x": 981,
-      "y": 2235,
+      "x": 727,
+      "y": 2216,
       "subtitle": "Agent Building",
-      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/devtools/developer-tools.png"
+      "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/aws/general/users.png"
     }
   ],
   "edges": [
@@ -458,12 +467,6 @@
       "label": "consumes MCP APIs"
     },
     {
-      "id": "users_to_chat",
-      "source": "end_users",
-      "target": "chat_app",
-      "label": "accesses chat UI"
-    },
-    {
       "id": "devs_to_api_center",
       "source": "developers",
       "target": "api_center",
@@ -474,6 +477,18 @@
       "source": "ai_developers",
       "target": "ai_hub",
       "label": "builds agents"
+    },
+    {
+      "id": "front_door_to_chat",
+      "source": "front_door",
+      "target": "chat_app",
+      "label": "routes traffic"
+    },
+    {
+      "id": "users_to_front_door",
+      "source": "end_users",
+      "target": "front_door",
+      "label": "accesses via WAF"
     }
   ]
 }
