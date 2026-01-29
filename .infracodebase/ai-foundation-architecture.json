@@ -21,7 +21,7 @@
       "x": 90,
       "y": 352,
       "width": 1470,
-      "height": 1030,
+      "height": 1120,
       "parentId": "rg"
     },
     {
@@ -143,7 +143,7 @@
       "label": "Azure AI Foundry",
       "subtitle": "ai-foundation-aihub (AIServices)",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/ai/foundry.png",
-      "x": 929,
+      "x": 710,
       "y": 1497,
       "parentId": "rg"
     },
@@ -179,17 +179,17 @@
       "label": "Cosmos DB",
       "subtitle": "enterprise_memory",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/data/azure-cosmos-db.png",
-      "x": 1150,
+      "x": 1170,
       "y": 1497,
       "parentId": "rg"
     },
     {
       "id": "ai_storage",
       "label": "AI Storage",
+      "x": 930,
+      "y": 1497,
       "subtitle": "Models & training data",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/storage/storage-account.png",
-      "x": 703,
-      "y": 1497,
       "parentId": "rg"
     },
     {
@@ -199,8 +199,8 @@
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/networking.png",
       "type": "container",
       "x": 90,
-      "y": 610,
-      "width": 1180,
+      "y": 700,
+      "width": 1200,
       "height": 330,
       "parentId": "vnet"
     },
@@ -224,7 +224,7 @@
       "id": "ai_storage_pe",
       "label": "AI Storage PE",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 523,
+      "x": 749,
       "y": 90,
       "parentId": "private_endpoint_subnet"
     },
@@ -232,7 +232,7 @@
       "id": "cosmos_pe",
       "label": "Cosmos PE",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 970,
+      "x": 990,
       "y": 90,
       "parentId": "private_endpoint_subnet"
     },
@@ -240,7 +240,7 @@
       "id": "ai_foundry_pe",
       "label": "AI Foundry PE",
       "icon": "https://stouse2icbprd.blob.core.windows.net/public/icons/azure/networking/private-endpoint.png",
-      "x": 749,
+      "x": 529,
       "y": 90,
       "parentId": "private_endpoint_subnet"
     }
